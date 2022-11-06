@@ -26,13 +26,6 @@ function Ship:keyPressed(key)
     self.forward:rotate(math.pi/2)
     print(self.forward.x.." "..self.forward.y)
   end
-
-  if key == TONTO 
-  [WJBDDNJSOA]
-  *do 
-    "Actor"
-    
-  end
 end
 
 return Ship
