@@ -91,7 +91,7 @@ return {
       type = "objectgroup",
       draworder = "topdown",
       id = 2,
-      name = "Solid",
+      name = "solid",
       class = "",
       visible = true,
       opacity = 1,
