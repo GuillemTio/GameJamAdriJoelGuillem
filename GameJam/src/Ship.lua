@@ -29,7 +29,8 @@ function Ship:keyPressed(key)
 
   if key == TONTO 
   [WJBDDNJSOA]
-  *do
+  *do 
+    "Actor"
     
   end
 end
