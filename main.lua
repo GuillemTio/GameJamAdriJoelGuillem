@@ -1,13 +1,10 @@
-Asteroid = Asteroid or require "src/Asteroid"
-Ship = Ship or require "src/Ship"
+Player = Player or require "src/Player"
 
 actorList = {}  --Lista de elementos de juego
 
 function love.load()
-  local s = Ship()
-  table.insert(actorList,s)
-  local a = Asteroid()
-  table.insert(actorList,a)
+local p = Player()
+table.insert(actorList,p)
 end
 
 function love.update(dt)
@@ -24,8 +21,6 @@ end
 
 function love.keypressed(key)
   for _,v in ipairs(actorList) do
-    if v:is(Ship) then
-      v:keyPressed(key)
-    end
+    
   end
 end
