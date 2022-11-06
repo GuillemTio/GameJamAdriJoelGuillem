@@ -1,6 +1,9 @@
 function love.conf(t)
-  t.window.width = 800  
-  t.window.height = 600
+  t.window.width = 1280  
+  t.window.height = 720
+  t.window.vsync = 0
   t.console = true
-  t.title = "Tasca A2: Moviment d'sprites amb Love2d"
+  t.title = "NINJA RIDE"
+
+  --t.version = "11.3" esto lo pone por que es para la version de LOVE para la que el juego fue hecho
 end
