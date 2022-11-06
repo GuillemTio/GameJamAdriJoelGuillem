@@ -28,6 +28,10 @@ function Ship:keyPressed(key)
   end
 
   if key == TONTO 
+  [WJBDDNJSOA]
+  *do
+    
+  end
 end
 
 return Ship
