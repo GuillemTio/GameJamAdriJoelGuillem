@@ -20,19 +20,59 @@ function Player:new()
     self.jumpAmount = -500
 
     self.grounded = false
+
+    self:loadAssets{}
     
     self.physics = {}
     self.physics.body = love.physics.newBody(World, self.x, self.y, "dynamic")
     self.physics.body:setFixedRotation(true)
-    self.physics.shape = love.physics.newRectangleShape(self.width,self.height) 
+    self.physics.shape = love.physics.newRectangleShape(self.width,self.height)  
     self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape)
 end
 
 function Player:update(dt)
     --Player.super.update(self,dt)
+    self:animate(dt)
     self:syncPhysics()
     self:move(dt)
     self:applyGravity(dt)
+end
+
+function Player:animate(dt)
+   self.animation.timer = self.animation.timer + dt
+   if self.animation.timer > self.animation.rate then
+      self.animation.timer = 0
+      self:setNewFrame()
+   end
+end
+
+function Player:setNewFrame()
+   local anim = self.animation.run
+   if anim.current <anim.total then
+      anim.current = anim.current +1
+   else
+      anim.current = 1
+   end
+   self.animation.draw = anim.img[anim.current]
+end
+
+function Player:loadAssets()
+   self.animation = {timer = 0, rate = 0.1}
+   self.animation.run = {total = 6, current = 1, img = {}}
+   for i=1, self.animation.run.total do
+      self.animation.run.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Run/"..i..".png")
+   end
+   
+   self.animation.iddle = {total = 4, current = 1, img = {}}
+   for i=1, self.animation.iddle.total do
+      self.animation.iddle.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Iddle/"..i..".png")
+   end
+
+   self.animation.draw = self.animation.iddle.img[1]
+   self.animation.width = self.animation.draw:getWidth()
+   self.animation.height = self.animation.draw:getHeight()
+
+
 end
 
 function Player:applyGravity(dt)
@@ -130,7 +170,8 @@ function Player:draw()
     
     --love.graphics.draw(self.image,xx,yy,rr,sx,sy,ox,oy,0,0)
 
-    love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
+    --love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
+    love.graphics.draw(self.animation.draw, self.x, self.y, 0, 1, 1, self.animation.width /2, self.animation.height /2)
 end
 
   return Player

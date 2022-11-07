@@ -3,6 +3,7 @@ Player = Player or require "src/Player"
 actorList = {}  --Lista de elementos de juego
 
 local STI = require("src/sti")
+love.graphics.setDefaultFilter("nearest", "nearest")
 
 function love.load()
   Map = STI("src/map/Map1.lua", {"box2d"})
