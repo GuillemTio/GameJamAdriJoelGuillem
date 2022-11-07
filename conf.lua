@@ -5,5 +5,5 @@ function love.conf(t)
   t.console = true
   t.title = "NINJA RIDE"
 
-  --t.version = "11.3" esto lo pone por que es para la version de LOVE para la que el juego fue hecho
+  t.version = "11.3" -- esto lo pone por que es para la version de LOVE para la que el juego fue hecho
 end

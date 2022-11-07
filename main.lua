@@ -14,7 +14,6 @@ function love.load()
   Player:new() 
   --local p = Player()
   --table.insert(actorList,p)
-
 end
 
 function love.update(dt)

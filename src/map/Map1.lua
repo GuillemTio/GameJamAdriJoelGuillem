@@ -100,7 +100,7 @@ return {
       parallaxx = 1,
       parallaxy = 1,
       properties = {
-        ["colidable"] = true
+        ["collidable"] = true
       },
       objects = {
         {
