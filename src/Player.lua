@@ -2,7 +2,9 @@ Actor = Actor or require "src/actor"
 local Player = Actor:extend()
 local Vector = Vector or require"src/vector"
 
-function Player:new(x,y)
+Player = {} -- Joel(07/11): no se si esto serà lo que da el problema / Joel(07/11): esta solucionado pero el tio lo tiene puesto
+
+function Player:new()
     --Player.super.new(self,"src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png",400,500,20,1,0)
     self.image = "src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png"
     self.x = 100
@@ -10,20 +12,21 @@ function Player:new(x,y)
     self.width = 50
     self.height = 37
     self.xVel = 0
-    self.yVel = 0
+    self.yVel = 100
     self.maxSpeed = 200
     self.acceleration = 4000
     self.friction = 3000
     
     self.physics = {}
-    self.physics.body = love.physics.newBody(World,self.x,self.y,"dynamic")
+    self.physics.body = love.physics.newBody(World, self.x, self.y, "dynamic")
     self.physics.body:setFixedRotation(true)
-    self.physics.shape = love.physics.newRectangleShape(self.width/2,self.height)
+    self.physics.shape = love.physics.newRectangleShape(self.width/2,self.height) 
+    self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape)
 end
 
 function Player:update(dt)
     --Player.super.update(self,dt)
-    Player:syncPhysics()
+    self:syncPhysics()
 end
 
 function Player:syncPhysics()
@@ -43,6 +46,6 @@ function Player:draw()
     --love.graphics.draw(self.image,xx,yy,rr,sx,sy,ox,oy,0,0)
 
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-  end
+end
 
   return Player
