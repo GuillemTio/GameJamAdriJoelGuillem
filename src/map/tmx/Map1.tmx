@@ -35,7 +35,7 @@
  </layer>
  <objectgroup color="#aa0000" id="2" name="solid">
   <properties>
-   <property name="colidable" type="bool" value="true"/>
+   <property name="collidable" type="bool" value="true"/>
   </properties>
   <object id="15" x="80" y="191.818" width="127.636" height="47.8182"/>
   <object id="16" x="0.182" y="336.591" width="639.136" height="31.3182"/>
