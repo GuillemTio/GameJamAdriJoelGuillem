@@ -1,6 +1,7 @@
 Actor = Actor or require "src/actor"
 local Player = Actor:extend()
 local Vector = Vector or require"src/vector"
+--local GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 
 Player = {} -- Joel(07/11): no se si esto serà lo que da el problema / Joel(07/11): esta solucionado pero el tio lo tiene puesto
 
@@ -19,6 +20,10 @@ function Player:new()
     self.gravity = 1500
     self.jumpAmount = -500
 
+    self.grapplinghookactor = nil
+
+    self.grappleactive = false
+    self.grabbed = false
     self.grounded = false
 
     self:loadAssets{}
@@ -26,7 +31,7 @@ function Player:new()
     self.physics = {}
     self.physics.body = love.physics.newBody(World, self.x, self.y, "dynamic")
     self.physics.body:setFixedRotation(true)
-    self.physics.shape = love.physics.newRectangleShape(self.width,self.height)  
+    self.physics.shape = love.physics.newRectangleShape(self.width/2,self.height)  
     self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape)
 end
 
@@ -34,8 +39,15 @@ function Player:update(dt)
     --Player.super.update(self,dt)
     self:animate(dt)
     self:syncPhysics()
-    self:move(dt)
-    self:applyGravity(dt)
+
+    if not self.grabbed then
+      self:move(dt)
+      self:grapplinghook(dt)
+      self:applyGravity(dt)
+    else
+      self:movetograpple()
+    end
+
 end
 
 function Player:animate(dt)
@@ -124,6 +136,10 @@ function Player:syncPhysics()
     self.physics.body:setLinearVelocity(self.xVel,self.yVel)
 end
 
+function Player:movetograpple()
+   self.xVel, self.yVel = 200,-200
+end
+
 function Player:beginContact(a, b, collision)
     if self.grounded == true then return end
     local nx, ny = collision:getNormal()
@@ -151,6 +167,19 @@ function Player:jump(key)
     end
 end
 
+function Player:grapplinghookkey(key)
+   if (key == "g") and not self.grappleactive then
+      self.grappleactive = true
+      self.grapplinghookactor = GrapplingHook:new()
+   end
+end
+
+function Player:grapplinghook(dt)
+   if self.grappleactive then
+      GrapplingHook:update(dt)
+   end
+end
+
 function Player:endContact(a, b, collision)
     if a == self.physics.fixture or b == self.physics.fixture then
        if self.currentGroundCollision == collision then
@@ -172,6 +201,10 @@ function Player:draw()
 
     --love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
     love.graphics.draw(self.animation.draw, self.x, self.y, 0, 1, 1, self.animation.width /2, self.animation.height /2)
+
+    if self.grappleactive then
+      GrapplingHook:draw()
+    end
 end
 
   return Player
