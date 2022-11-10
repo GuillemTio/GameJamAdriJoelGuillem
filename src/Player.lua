@@ -20,8 +20,6 @@ function Player:new()
     self.gravity = 1500
     self.jumpAmount = -500
 
-    self.grapplinghookactor = nil
-
     self.grappleactive = false
     self.grabbed = false
     self.grounded = false
@@ -137,7 +135,10 @@ function Player:syncPhysics()
 end
 
 function Player:movetograpple()
-   self.xVel, self.yVel = 200,-200
+   local direction = Vector.new(GrapplingHook.x - self.x, GrapplingHook.y-self.y)
+   direction:normalize()
+
+   self.xVel, self.yVel = direction.x*300,direction.y*300
 end
 
 function Player:beginContact(a, b, collision)
@@ -168,10 +169,22 @@ function Player:jump(key)
 end
 
 function Player:grapplinghookkey(key)
+   local g
    if (key == "g") and not self.grappleactive then
       self.grappleactive = true
-      self.grapplinghookactor = GrapplingHook:new()
+      g = GrapplingHook:new()
+      table.insert(actorList,g)
+   
+   elseif (key == "g") and self.grappleactive then
+      self.grappleactive = false
+      if self.grabbed then
+         self.grabbed = false
+         self.grounded = false
+      end
+      
+      table.remove(actorList,g)
    end
+   -- si le vuelvo a dar se cancela 
 end
 
 function Player:grapplinghook(dt)

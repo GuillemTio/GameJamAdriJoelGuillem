@@ -15,7 +15,6 @@ function love.load()
   --background = love.graphics.newImage("textures/background") -- this is for our future background
 
   Player:new()
-  print("holaaaaaa")
   --local p = Player()
   --table.insert(actorList,p)
 end
@@ -55,7 +54,12 @@ function love.keypressed(key)
 end
 
 function beginContact(a, b, collision)
-  Player:beginContact(a, b, collision)
+  if a == Player.physics.fixture or b == Player.physics.fixture then
+    Player:beginContact(a, b, collision)
+
+  elseif a == GrapplingHook.physics.fixture or b == GrapplingHook.physics.fixture then
+    GrapplingHook:beginContact(a, b, collision)
+  end
 end
 
 function endContact(a, b, collision)

@@ -7,8 +7,8 @@ function GrapplingHook:new()
     self.y = Player.y - 10
     self.width = 6
     self.height = 6
-    self.xVel = 200
-    self.yVel = -200
+    self.xVel = 250
+    self.yVel = -250
 
     self.oldY = nil
 
@@ -31,7 +31,7 @@ function GrapplingHook:update(dt)
     end
 
     -- que se mueva en direccion (1,-1) CHECK
-    -- a la que colisiona con algo, se queda quieto, y el jugador va hacia el gancho MEDIO CHECK
+    -- a la que colisiona con algo, se queda quieto, y el jugador va hacia el gancho CHECK
     -- si en x distancia no ha colisionado con nada se destruye y Player.grappleactive = false
 
 end
@@ -40,11 +40,12 @@ function GrapplingHook:syncPhysics()
     self.oldY = self.y
     self.x, self.y = self.physics.body:getPosition()
     self.physics.body:setLinearVelocity(self.xVel, self.yVel)
-    if self.y < 55  then
-        self.xVel = 0
-        self.yVel = 0
-        self.collided = true
-    end
+end
+
+function GrapplingHook:beginContact(a, b, collision)
+    self.xVel = 0
+    self.yVel = 0
+    self.collided = true
 end
 
 function GrapplingHook:oncollision()
