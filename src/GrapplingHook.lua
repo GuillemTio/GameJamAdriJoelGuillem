@@ -10,7 +10,9 @@ function GrapplingHook:new()
     self.xVel = 250
     self.yVel = -250
 
-    self.oldY = nil
+    self.firstY = self.y
+    self.currentYDistance = 0
+    self.maxYDistance = 150
 
     self.collided = false
 
@@ -22,12 +24,13 @@ function GrapplingHook:new()
 end
 
 function GrapplingHook:update(dt)
-    
-    
+
+
     if self.collided then
         self:oncollision()
     else
         self:syncPhysics()
+        self:checkdistance()
     end
 
     -- que se mueva en direccion (1,-1) CHECK
@@ -37,9 +40,21 @@ function GrapplingHook:update(dt)
 end
 
 function GrapplingHook:syncPhysics()
-    self.oldY = self.y
     self.x, self.y = self.physics.body:getPosition()
     self.physics.body:setLinearVelocity(self.xVel, self.yVel)
+end
+
+function GrapplingHook:checkdistance()
+    if self.currentYDistance < self.maxYDistance then
+        self.currentYDistance = -(self.y - self.firstY)
+    else
+        Player.grappleactive = false
+        for _,v in ipairs(actorList) do
+            if v == self then
+                table.remove(actorList,v)
+            end
+        end
+    end
 end
 
 function GrapplingHook:beginContact(a, b, collision)
@@ -54,5 +69,7 @@ end
 
 function GrapplingHook:draw()
     love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
+    love.graphics.line( Player.x, Player.y, self.x, self.y)
 end
+
 return GrapplingHook

@@ -37,11 +37,12 @@ function Player:update(dt)
     --Player.super.update(self,dt)
     self:animate(dt)
     self:syncPhysics()
+    self:applyGravity(dt)
 
     if not self.grabbed then
       self:move(dt)
       self:grapplinghook(dt)
-      self:applyGravity(dt)
+      --self:applyGravity(dt)
     else
       self:movetograpple()
     end
@@ -184,7 +185,7 @@ function Player:grapplinghookkey(key)
       
       table.remove(actorList,g)
    end
-   -- si le vuelvo a dar se cancela 
+   -- si le vuelvo a dar se cancela CHECK
 end
 
 function Player:grapplinghook(dt)
