@@ -1,5 +1,6 @@
 Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
+Camera = Camera or require"src/Camera"
 
 actorList = {} --Lista de elementos de juego
 
@@ -12,6 +13,7 @@ function love.load()
   World:setCallbacks(beginContact, endContact)
   Map:box2d_init(World)
   Map.layers.solid.visible = false -- colliders non visible
+  MapWidth = Map.layers.ground.width * 16
   --background = love.graphics.newImage("textures/background") -- this is for our future background
 
   Player:new()
@@ -25,6 +27,7 @@ function love.update(dt)
   --end
   World:update(dt)
   Player:update(dt)
+  Camera:setPosition(Player.x, 0)
 end
 
 function love.draw()
@@ -33,16 +36,14 @@ function love.draw()
   --end
 
   --love.graphics.draw(background) -- this is for our future background, it should be always before the map
-  Map:draw(0, 0, 2, 2)
+  Map:draw(-Camera.x, -Camera.y, Camera.scale, Camera.scale)
 
-  -- anything drawn before the push and after the pop will be not affected by the scaling sti
-  love.graphics.push() -- save the current transformations (positions, rotation, sacle....) to the stack
-  love.graphics.scale(2, 2)
+
+  Camera:apply()
 
   Player:draw()
 
-  love.graphics.pop() -- retrieves the information from the stack and resets everything to this state
-
+  Camera:clear()
 end
 
 function love.keypressed(key)
