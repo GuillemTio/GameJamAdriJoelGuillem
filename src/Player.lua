@@ -34,7 +34,7 @@ function Player:new()
    self.physics = {}
    self.physics.body = love.physics.newBody(World, self.x, self.y, "dynamic")
    self.physics.body:setFixedRotation(true)
-   self.physics.shape = love.physics.newRectangleShape(self.width / 2, self.height)
+   self.physics.shape = love.physics.newRectangleShape(self.width / 2.3, self.height)
    self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape)
 end
 

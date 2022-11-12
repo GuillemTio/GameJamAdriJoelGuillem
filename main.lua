@@ -1,8 +1,7 @@
 Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 Camera = Camera or require"src/Camera"
---EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
-Enemy = Enemy or require"src/Enemy"
+EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
 
 actorList = {} --Lista de elementos de juego
 
@@ -22,7 +21,7 @@ function love.load()
   background2 = love.graphics.newImage("src/textures/background/background_layer_2.png")
   background3 = love.graphics.newImage("src/textures/background/background_layer_3.png")
 
-  Enemy.loadAssets()
+  EnemyGoblin.loadAssets()
 
   Player:new()
   spawnEntities()
@@ -36,7 +35,7 @@ function love.update(dt)
   --end
   World:update(dt)
   Player:update(dt)
-  Enemy.updateAll(dt)
+  EnemyGoblin.updateAll(dt)
   Camera:setPosition(Player.x, 0)
 end
 
@@ -55,7 +54,7 @@ function love.draw()
   Camera:apply()
 
   Player:draw()
-  Enemy.drawAll()
+  EnemyGoblin.drawAll()
 
   Camera:clear()
 end
@@ -86,7 +85,7 @@ end
 function spawnEntities()
   for i,v in ipairs(Map.layers.entity.objects) do
     if v.type == "enemy" then
-      Enemy:new(v.x + v.width / 2, v.y + v.height / 2)
+      EnemyGoblin:new(v.x + v.width / 2, v.y + v.height / 2)
     end
   end
 end
