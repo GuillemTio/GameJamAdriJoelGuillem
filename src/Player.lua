@@ -144,21 +144,9 @@ end
 
 function Player:move(dt)
    if love.keyboard.isDown("d", "right") then
-      if self.xVel < self.maxSpeed then
-         if self.xVel + self.acceleration * dt < self.maxSpeed then
-            self.xVel = self.xVel + self.acceleration * dt
-         else
-            self.xVel = self.maxSpeed
-         end
-      end
+      self.xVel = math.min(self.xVel + self.acceleration * dt, self.maxSpeed)
    elseif love.keyboard.isDown("a", "left") then
-      if self.xVel > -self.maxSpeed then
-         if self.xVel - self.acceleration * dt > -self.maxSpeed then
-            self.xVel = self.xVel - self.acceleration * dt
-         else
-            self.xVel = -self.maxSpeed
-         end
-      end
+      self.xVel = math.max(self.xVel - self.acceleration * dt, -self.maxSpeed)
    else
       self:applyFriction(dt)
    end
@@ -166,17 +154,9 @@ end
 
 function Player:applyFriction(dt)
    if self.xVel > 0 then
-      if self.xVel - self.friction * dt > 0 then
-         self.xVel = self.xVel - self.friction * dt
-      else
-         self.xVel = 0
-      end
+      self.xVel = math.max(self.xVel - self.friction * dt, 0)
    elseif self.xVel < 0 then
-      if self.xVel + self.friction * dt < 0 then
-         self.xVel = self.xVel + self.friction * dt
-      else
-         self.xVel = 0
-      end
+      self.xVel = math.min(self.xVel + self.friction * dt, 0)
    end
 end
 
@@ -198,10 +178,14 @@ function Player:beginContact(a, b, collision)
    if a == self.physics.fixture then
       if ny > 0 then
          self:land(collision)
+      elseif ny < 0 then
+         self.yVel = 0
       end
    elseif b == self.physics.fixture then
       if ny < 0 then
          self:land(collision)
+      elseif ny > 0 then
+         self.yVel = 0
       end
    end
 end
