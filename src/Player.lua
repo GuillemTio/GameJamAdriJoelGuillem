@@ -8,7 +8,7 @@ Player = {} -- Joel(07/11): no se si esto serà lo que da el problema / Joel(07/
 function Player:new()
    --Player.super.new(self,"src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png",400,500,20,1,0)
    self.image = "src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png"
-   self.x = 100
+   self.x = 50
    self.y = 0
    self.width = 50
    self.height = 37
@@ -198,7 +198,7 @@ function Player:land(collision)
 end
 
 function Player:jump(key)
-   if (key == "w") then
+   if (key == "space") then
       if self.graceTime>0 or self.grounded then
          self.yVel = self.jumpAmount
          self.grounded = false
@@ -209,12 +209,12 @@ end
 
 function Player:grapplinghookkey(key)
    local g
-   if (key == "e") and not self.grappleactive then
+   if (key == "l") and not self.grappleactive then
       self.grappleactive = true
       g = GrapplingHook:new()
       table.insert(actorList, g)
 
-   elseif (key == "e") and self.grappleactive then
+   elseif (key == "l") and self.grappleactive then
       self.grappleactive = false
       if self.grabbed then
          self.grabbed = false
