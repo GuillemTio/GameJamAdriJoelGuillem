@@ -11,7 +11,9 @@
         "background3",
         "endContact",
         "beginContact",
-        "spawnEntities"
+        "spawnEntities",
+        "v",
+        "terrain"
     ],
     "Lua.diagnostics.disable": [
         "param-type-mismatch",

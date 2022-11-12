@@ -19,7 +19,7 @@ function EnemyGoblin:new(x, y)
     instance.physics = {}
     instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
     instance.physics.body:setFixedRotation(true)
-    instance.physics.shape = love.physics.newRectangleShape(5 * 0.4, 5 * 0.75)
+    instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.4, instance.height * 0.75)
     instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
     instance.physics.body:setMass(25)
     table.insert(ActiveEnemies, instance)
@@ -31,7 +31,7 @@ function EnemyGoblin.loadAssets()
         EnemyGoblin.runAnimation[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/Run"..i..".png")
     end
 
-    EnemyGoblin.width = EnemyGoblin.runAnimation[1]:getWidth()
+    EnemyGoblin.Width = EnemyGoblin.runAnimation[1]:getWidth()
     EnemyGoblin.height = EnemyGoblin.runAnimation[1]:getHeight()
 end
 

@@ -1,7 +1,8 @@
 Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 Camera = Camera or require"src/Camera"
-EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
+--EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
+Enemy = Enemy or require"src/Enemy"
 
 actorList = {} --Lista de elementos de juego
 
@@ -21,7 +22,7 @@ function love.load()
   background2 = love.graphics.newImage("src/textures/background/background_layer_2.png")
   background3 = love.graphics.newImage("src/textures/background/background_layer_3.png")
 
-  EnemyGoblin.loadAssets()
+  Enemy.loadAssets()
 
   Player:new()
   spawnEntities()
@@ -35,7 +36,7 @@ function love.update(dt)
   --end
   World:update(dt)
   Player:update(dt)
-  EnemyGoblin.updateAll(dt)
+  Enemy.updateAll(dt)
   Camera:setPosition(Player.x, 0)
 end
 
@@ -54,7 +55,7 @@ function love.draw()
   Camera:apply()
 
   Player:draw()
-  EnemyGoblin.drawAll()
+  Enemy.drawAll()
 
   Camera:clear()
 end
@@ -71,8 +72,10 @@ function beginContact(a, b, collision)
   if a == Player.physics.fixture or b == Player.physics.fixture then
     Player:beginContact(a, b, collision)
 
-  elseif a == GrapplingHook.physics.fixture or b == GrapplingHook.physics.fixture then
-    GrapplingHook:beginContact(a, b, collision)
+  elseif Player.grappleactive then
+    if a == GrapplingHook.physics.fixture or b == GrapplingHook.physics.fixture then
+      GrapplingHook:beginContact(a, b, collision)
+    end
   end
 end
 
@@ -83,7 +86,7 @@ end
 function spawnEntities()
   for i,v in ipairs(Map.layers.entity.objects) do
     if v.type == "enemy" then
-      EnemyGoblin.new(v.x + v.width / 2, v.y + v.height / 2)
+      Enemy:new(v.x + v.width / 2, v.y + v.height / 2)
     end
   end
 end

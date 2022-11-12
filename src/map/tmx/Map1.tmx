@@ -41,7 +41,7 @@
 </data>
  </layer>
  <objectgroup color="#4eff0e" id="3" name="entity">
-  <object id="121" name="EnemyGoblin" type="enemy" x="382.667" y="230.667">
+  <object id="121" name="EnemyGoblin" type="enemy" x="249.334" y="310">
    <point/>
   </object>
   <object id="122" name="EnemyGoblin" type="enemy" x="1052" y="188.667">
