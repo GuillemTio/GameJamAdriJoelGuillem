@@ -1,6 +1,7 @@
 Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 Camera = Camera or require"src/Camera"
+EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
 
 actorList = {} --Lista de elementos de juego
 
@@ -13,12 +14,17 @@ function love.load()
   World:setCallbacks(beginContact, endContact)
   Map:box2d_init(World)
   Map.layers.solid.visible = false -- colliders non visible
+  Map.layers.entity.visible = false
+  
   MapWidth = Map.layers.ground.width * 24
   background = love.graphics.newImage("src/textures/background/background_layer_1.png") -- this is for our future background
   background2 = love.graphics.newImage("src/textures/background/background_layer_2.png")
   background3 = love.graphics.newImage("src/textures/background/background_layer_3.png")
 
+  EnemyGoblin.loadAssets()
+
   Player:new()
+  spawnEntities()
   --local p = Player()
   --table.insert(actorList,p)
 end
@@ -29,6 +35,7 @@ function love.update(dt)
   --end
   World:update(dt)
   Player:update(dt)
+  EnemyGoblin.updateAll(dt)
   Camera:setPosition(Player.x, 0)
 end
 
@@ -47,6 +54,7 @@ function love.draw()
   Camera:apply()
 
   Player:draw()
+  EnemyGoblin.drawAll()
 
   Camera:clear()
 end
@@ -70,4 +78,12 @@ end
 
 function endContact(a, b, collision)
   Player:endContact(a, b, collision)
+end
+
+function spawnEntities()
+  for i,v in ipairs(Map.layers.entity.objects) do
+    if v.type == "enemy" then
+      EnemyGoblin.new(v.x + v.width / 2, v.y + v.height / 2)
+    end
+  end
 end

@@ -8,6 +8,13 @@
         "background",
         "actorList",
         "background2",
-        "background3"
+        "background3",
+        "endContact",
+        "beginContact",
+        "spawnEntities"
+    ],
+    "Lua.diagnostics.disable": [
+        "param-type-mismatch",
+        "redundant-parameter"
     ]
 }
