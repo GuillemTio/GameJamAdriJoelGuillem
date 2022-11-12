@@ -58,10 +58,12 @@ function Player:update(dt)
 end
 
 function Player:setState()
-   if not self.grounded then
+   if not self.grounded and not self.grabbed then
       self.state = "air"
    elseif self.xVel == 0 then
       self.state = "idle"
+   elseif self.grabbed then
+      self.state = "grapple"
    else
       self.state = "run"
    end
@@ -111,9 +113,20 @@ function Player:loadAssets()
       self.animation.idle.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Idle/" .. i ..".png")
    end
 
-   self.animation.air = { total = 1, current = 1, img = {} }
-   for i = 4, self.animation.air.total do
+   self.animation.air = { total = 2, current = 1, img = {} }
+   for i = 1, self.animation.air.total do
       self.animation.air.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Jump/" .. i ..".png")
+   end
+
+   
+   self.animation.grapple = { total = 2, current = 1, img = {} }
+   for i = 1, self.animation.air.total do
+      self.animation.grapple.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Grapple/" .. i ..".png")
+   end
+
+   self.animation.attack = { total = 4, current = 1, img = {} }
+   for i = 1, self.animation.air.total do
+      self.animation.attack.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Attack/" .. i ..".png")
    end
 
    self.animation.draw = self.animation.idle.img[1]
