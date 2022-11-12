@@ -14,7 +14,7 @@ function GrapplingHook:new()
     self.firstY = self.y
     self.currentYDistance = 0
     self.maxYDistanceToGrab = 180
-    self.distanceToLetGo = 50
+    self.distanceToLetGo = 40
 
     self.collided = false
 
@@ -53,7 +53,7 @@ function GrapplingHook:checkdistancefromplayer(playeriscoming)
         if actualDistanceFromPlayer < self.distanceToLetGo then
             Player.grappleactive = false
             Player.grabbed = false
-            Player.grounded = false
+            --Player.grounded = false
             for _, v in ipairs(actorList) do
                 if v == self then
                     table.remove(actorList, v)
@@ -85,9 +85,12 @@ function GrapplingHook:oncollision()
 end
 
 function GrapplingHook:draw()
-    love.graphics.draw(self.image,self.x,self.y,0,1.5,1.5,self.width/2,self.height/2)
+    love.graphics.draw(self.image,self.x,self.y,0,1.5,1.5,self.width/4,self.height/1.25)
     --love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
+
+    love.graphics.setColor(	0.4, 0.28, 0.16,1)
     love.graphics.line(Player.x, Player.y, self.x, self.y)
+    love.graphics.setColor(1,1,1,1)
 end
 
 return GrapplingHook
