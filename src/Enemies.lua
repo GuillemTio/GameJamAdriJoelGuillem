@@ -12,13 +12,16 @@ function Enemies:new(x, y)
     instance.y = y
     instance.r = 0
 
+    instance.state = "run"
+
     instance.animation = {timer = 0, rate = 0.1}
     instance.animation.run = {total = 8, current = 1, img = Enemies.runAnimation}
     instance.animation.draw = instance.animation.run.img[1]
 
     instance.physics = {}
     instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
-    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
+    instance.physics.body:setFixedRotation(true)
+    instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.4, instance.height * 0.75)
     instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
     instance.physics.body:setMass(25)
     table.insert(ActiveEnemies, instance)
@@ -36,6 +39,25 @@ end
 
 function Enemies:update(dt)
     self:syncPhysics()
+    self:animate(dt)
+end
+
+function Enemies:animate(dt)
+    self.animation.timer = self.animation.timer + dt
+    if self.animation.timer > self.animation.rate then
+       self.animation.timer = 0
+       self:setNewFrame()
+    end
+end
+ 
+function Enemies:setNewFrame()
+    local anim = self.animation[self.state]
+    if anim.current < anim.total then
+       anim.current = anim.current + 1
+    else
+       anim.current = 1
+    end
+    self.animation.draw = anim.img[anim.current]
 end
 
 function Enemies:syncPhysics()
@@ -44,7 +66,7 @@ function Enemies:syncPhysics()
 end
 
 function Enemies:draw()
-    love.graphics.draw(self.img, self.x, self.y, self.r, self.scaleX, 1, self.width / 2, self.height / 2)
+    love.graphics.draw(self.animation.draw, self.x, self.y, self.r, self.scaleX, 1, self.width / 2, self.height / 2)
 end
 
 function Enemies.updateAll(dt)
