@@ -2,7 +2,7 @@
 
 local Enemies = {}
 Enemies._index = Enemies
-local Player = require("Player")
+local Player = require("src/Player")
 
 local ActiveEnemies = {}
 
@@ -11,6 +11,10 @@ function Enemies:new(x, y)
     instance.x = x
     instance.y = y
     instance.r = 0
+
+    instance.animation = {timer = 0, rate = 0.1}
+    instance.animation.run = {total = 8, current = 1, img = Enemies.runAnimation}
+    instance.animation.draw = instance.animation.run.img[1]
 
     instance.physics = {}
     instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
