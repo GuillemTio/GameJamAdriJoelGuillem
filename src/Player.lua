@@ -20,8 +20,13 @@ function Player:new()
    self.gravity = 1500
    self.jumpAmount = -500
 
+   self.graceTime = 0 
+   self.graceDuration = 0.1
+
    self.grappleactive = false
    self.grabbed = false
+   self.direction = "right"
+   self.state = "idle"
    self.grounded = false
 
    self:loadAssets {}
@@ -35,6 +40,9 @@ end
 
 function Player:update(dt)
    --Player.super.update(self,dt)
+   self:setState()
+   self:setDirection()
+   self:decreaseGraceTime(dt)
    self:animate(dt)
    self:syncPhysics()
    self:grapplinghook(dt)
@@ -49,6 +57,26 @@ function Player:update(dt)
 
 end
 
+function Player:setState()
+   if not self.grounded and not self.grabbed then
+      self.state = "air"
+   elseif self.xVel == 0 then
+      self.state = "idle"
+   elseif self.grabbed then
+      self.state = "grapple"
+   else
+      self.state = "run"
+   end
+end
+
+function Player:setDirection()
+   if self.xVel <0 then
+      self.direction = "left"
+   elseif self.xVel>0 then
+      self.direction = "right"
+   end
+end
+
 function Player:animate(dt)
    self.animation.timer = self.animation.timer + dt
    if self.animation.timer > self.animation.rate then
@@ -57,8 +85,14 @@ function Player:animate(dt)
    end
 end
 
+function Player:decreaseGraceTime(dt)
+   if not self.grounded then
+      self.graceTime = self.graceTime - dt
+   end
+end
+
 function Player:setNewFrame()
-   local anim = self.animation.run
+   local anim = self.animation[self.state]
    if anim.current < anim.total then
       anim.current = anim.current + 1
    else
@@ -74,13 +108,28 @@ function Player:loadAssets()
       self.animation.run.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Run/" .. i .. ".png")
    end
 
-   self.animation.iddle = { total = 4, current = 1, img = {} }
-   for i = 1, self.animation.iddle.total do
-      self.animation.iddle.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Iddle/" .. i ..
-         ".png")
+   self.animation.idle = { total = 4, current = 1, img = {} }
+   for i = 1, self.animation.idle.total do
+      self.animation.idle.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Idle/" .. i ..".png")
    end
 
-   self.animation.draw = self.animation.iddle.img[1]
+   self.animation.air = { total = 2, current = 1, img = {} }
+   for i = 1, self.animation.air.total do
+      self.animation.air.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Jump/" .. i ..".png")
+   end
+
+   
+   self.animation.grapple = { total = 2, current = 1, img = {} }
+   for i = 1, self.animation.air.total do
+      self.animation.grapple.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Grapple/" .. i ..".png")
+   end
+
+   self.animation.attack = { total = 4, current = 1, img = {} }
+   for i = 1, self.animation.air.total do
+      self.animation.attack.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Attack/" .. i ..".png")
+   end
+
+   self.animation.draw = self.animation.idle.img[1]
    self.animation.width = self.animation.draw:getWidth()
    self.animation.height = self.animation.draw:getHeight()
 
@@ -161,23 +210,27 @@ function Player:land(collision)
    self.currentGroundCollision = collision
    self.yVel = 0
    self.grounded = true
+   self.graceTime = self.graceDuration
 end
 
 function Player:jump(key)
-   if (key == "space") and self.grounded then
-      self.yVel = self.jumpAmount
-      self.grounded = false
+   if (key == "w") then
+      if self.graceTime>0 or self.grounded then
+         self.yVel = self.jumpAmount
+         self.grounded = false
+         self.graceTime = 0 
+      end
    end
 end
 
 function Player:grapplinghookkey(key)
    local g
-   if (key == "g") and not self.grappleactive then
+   if (key == "e") and not self.grappleactive then
       self.grappleactive = true
       g = GrapplingHook:new()
       table.insert(actorList, g)
 
-   elseif (key == "g") and self.grappleactive then
+   elseif (key == "e") and self.grappleactive then
       self.grappleactive = false
       if self.grabbed then
          self.grabbed = false
@@ -187,6 +240,13 @@ function Player:grapplinghookkey(key)
       table.remove(actorList, g)
    end
    -- si le vuelvo a dar se cancela CHECK
+end
+
+function Player:attack(dt)
+-- ANIMACION
+--if then
+
+--end
 end
 
 function Player:grapplinghook(dt)
@@ -215,7 +275,12 @@ function Player:draw()
    --love.graphics.draw(self.image,xx,yy,rr,sx,sy,ox,oy,0,0)
 
    --love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
-   love.graphics.draw(self.animation.draw, self.x, self.y, 0, 1, 1, self.animation.width / 2, self.animation.height / 2)
+
+   local scaleX = 1
+   if self.direction == "left" then
+      scaleX = -1
+   end
+   love.graphics.draw(self.animation.draw, self.x, self.y, 0, scaleX, 1, self.animation.width / 2, self.animation.height / 2)
 
    if self.grappleactive then
       GrapplingHook:draw()
