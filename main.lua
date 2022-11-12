@@ -13,8 +13,10 @@ function love.load()
   World:setCallbacks(beginContact, endContact)
   Map:box2d_init(World)
   Map.layers.solid.visible = false -- colliders non visible
-  MapWidth = Map.layers.ground.width * 16
-  --background = love.graphics.newImage("textures/background") -- this is for our future background
+  MapWidth = Map.layers.ground.width * 24
+  background = love.graphics.newImage("src/textures/background/background_layer_1.png") -- this is for our future background
+  background2 = love.graphics.newImage("src/textures/background/background_layer_2.png")
+  background3 = love.graphics.newImage("src/textures/background/background_layer_3.png")
 
   Player:new()
   --local p = Player()
@@ -35,7 +37,10 @@ function love.draw()
   --v:draw()
   --end
 
-  --love.graphics.draw(background) -- this is for our future background, it should be always before the map
+  love.graphics.draw(background, 0, 0, 0, 5, 5) -- this is for our future background, it should be always before the map
+  love.graphics.draw(background2, 0, 0, 0, 5, 5)
+  love.graphics.draw(background3, 0, 0, 0, 5, 5)
+
   Map:draw(-Camera.x, -Camera.y, Camera.scale, Camera.scale)
 
 
