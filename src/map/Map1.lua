@@ -51,7 +51,7 @@ return {
       width = 40,
       height = 23,
       id = 1,
-      name = "Capa de patrones 1",
+      name = "ground",
       class = "",
       visible = true,
       opacity = 1,
