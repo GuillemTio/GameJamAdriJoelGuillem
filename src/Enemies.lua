@@ -1,10 +1,8 @@
 
 
-local Enemies = {img = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/Idle.png")}
+local Enemies = {}
 Enemies._index = Enemies
-
-Enemies.width = Enemies.img:getWidth()
-Enemies.height = Enemies.img:getHeight()
+local Player = require("Player")
 
 local ActiveEnemies = {}
 
@@ -20,6 +18,16 @@ function Enemies:new(x, y)
     instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
     instance.physics.body:setMass(25)
     table.insert(ActiveEnemies, instance)
+end
+
+function Enemies.loadAssets()
+    Enemies.runAnimation = {}
+    for i=1,8 do
+        Enemies.runAnimation[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/Run"..i..".png")
+    end
+
+    Enemies.width = Enemies.runAnimation[1]:getWidth()
+    Enemies.height = Enemies.runAnimation[1]:getHeight()
 end
 
 function Enemies:update(dt)
