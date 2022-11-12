@@ -52,7 +52,6 @@ function love.keypressed(key)
   --end
   Player:jump(key)
   Player:grapplinghookkey(key)
-  Player:attack(key)
 end
 
 function beginContact(a, b, collision)
