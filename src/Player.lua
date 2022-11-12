@@ -164,7 +164,7 @@ function Player:land(collision)
 end
 
 function Player:jump(key)
-   if (key == "space") and self.grounded then
+   if (key == "w") and self.grounded then
       self.yVel = self.jumpAmount
       self.grounded = false
    end
@@ -172,12 +172,12 @@ end
 
 function Player:grapplinghookkey(key)
    local g
-   if (key == "g") and not self.grappleactive then
+   if (key == "e") and not self.grappleactive then
       self.grappleactive = true
       g = GrapplingHook:new()
       table.insert(actorList, g)
 
-   elseif (key == "g") and self.grappleactive then
+   elseif (key == "e") and self.grappleactive then
       self.grappleactive = false
       if self.grabbed then
          self.grabbed = false
@@ -187,6 +187,13 @@ function Player:grapplinghookkey(key)
       table.remove(actorList, g)
    end
    -- si le vuelvo a dar se cancela CHECK
+end
+
+function Player:attack(dt)
+-- ANIMACION
+if then
+   
+end
 end
 
 function Player:grapplinghook(dt)
