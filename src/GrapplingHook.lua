@@ -3,10 +3,11 @@ local GrapplingHook = Actor:extend()
 local Vector = Vector or require "src/vector"
 
 function GrapplingHook:new()
+    self.image = love.graphics.newImage("src/textures/gancho.png")
     self.x = Player.x + 10
     self.y = Player.y - 10
-    self.width = 6
-    self.height = 6
+    self.width = 8
+    self.height = 8
     self.xVel = 250
     self.yVel = -250
 
@@ -84,7 +85,8 @@ function GrapplingHook:oncollision()
 end
 
 function GrapplingHook:draw()
-    love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
+    love.graphics.draw(self.image,self.x,self.y,0,1.5,1.5,self.width/2,self.height/2)
+    --love.graphics.rectangle("fill", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
     love.graphics.line(Player.x, Player.y, self.x, self.y)
 end
 
