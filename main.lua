@@ -10,7 +10,7 @@ local STI = require("src/sti")
 love.graphics.setDefaultFilter("nearest", "nearest")
 
 function love.load()
-  StartMenu:new()
+  --StartMenu:new()
 
   Map = STI("src/map/Map1.lua", { "box2d" })
   World = love.physics.newWorld(0, 0) -- takes x and y velocity for the World, for example to create gravity
@@ -32,7 +32,7 @@ function love.update(dt)
   --v:update(dt)
   --end
 
-  StartMenu:update(dt)
+  --StartMenu:update(dt)
 
   World:update(dt)
   Player:update(dt)
@@ -43,7 +43,7 @@ function love.draw()
   --for _,v in ipairs(actorList) do
   --v:draw()
   --end
-  StartMenu:draw()
+  --StartMenu:draw()
 
   love.graphics.draw(background, 0, 0, 0, 5, 5) -- this is for our future background, it should be always before the map
   love.graphics.draw(background2, 0, 0, 0, 5, 5)
