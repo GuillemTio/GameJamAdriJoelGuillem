@@ -22,6 +22,7 @@ function EnemyGoblin:new(x,y)
    instance.speed = 0
    instance.xVel = instance.speed
 
+   self.health = {current = 2, max = 2}
    instance.damage = 1
 
    instance.state = "idle"
@@ -38,6 +39,7 @@ function EnemyGoblin:new(x,y)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(25)
    table.insert(ActiveEnemies, instance)
+   table.insert(actorList, instance)
 end
 
 function EnemyGoblin.loadAssets()
@@ -55,7 +57,39 @@ function EnemyGoblin.loadAssets()
    EnemyGoblin.height = EnemyGoblin.runAnim[1]:getHeight()
 end
 
+function EnemyGoblin:takeDamage(amount)
+   if self.health.current - amount > 0 then
+      self.health.current = self.health.current - amount
+   else
+      self.health.current = 0
+      self:die()
+   end
+
+   print(self.health.current)
+end
+
+function EnemyGoblin:die()
+   self.alive = false
+   print("u died")
+end
+
+function EnemyGoblin:respawn()
+   if not self.alive then
+      for _, v in ipairs(ActiveEnemies) do
+         if v == self then
+            table.remove(ActiveEnemies, v)
+         end
+      end
+      for _, v in ipairs(actorList) do
+         if v == self then
+            table.remove(actorList, v)
+         end
+      end
+   end
+end
+
 function EnemyGoblin:update(dt)
+   self:respawn()
    self:syncPhysics()
    self:animate(dt)
    self:playerDetected()
@@ -126,10 +160,8 @@ end
 function EnemyGoblin.beginContact(a, b, collision)
    for i,instance in ipairs(ActiveEnemies) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
-         print("damaged")
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
-            return true
          end
       end
    end

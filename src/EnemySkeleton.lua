@@ -1,10 +1,10 @@
-local Enemy = {}
-Enemy.__index = Enemy
+local EnemySkeleton = {}
+EnemySkeleton.__index = EnemySkeleton
 local Player = require("src/Player")
 
 local ActiveEnemies = {}
 
-function Enemy.removeAll()
+function EnemySkeleton.removeAll()
    for i,v in ipairs(ActiveEnemies) do
       v.physics.body:destroy()
    end
@@ -12,27 +12,23 @@ function Enemy.removeAll()
    ActiveEnemies = {}
 end
 
-function Enemy:new(x,y)
-   local instance = setmetatable({}, Enemy)
+function EnemySkeleton:new(x,y)
+   local instance = setmetatable({}, EnemySkeleton)
    instance.x = x
    instance.y = y
    instance.offsetY = -8
    instance.r = 0
 
-   instance.speed = 50
-   instance.speedMod = 1
+   instance.speed = 0
    instance.xVel = instance.speed
-
-   instance.rageCounter = 0
-   instance.rageTrigger = 3
 
    instance.damage = 1
 
-   instance.state = "run"
+   instance.state = "idle"
 
    instance.animation = {timer = 0, rate = 0.1}
-   instance.animation.run = {total = 4, current = 1, img = Enemy.runAnim}
-   --instance.animation.walk = {total = 4, current = 1, img = Enemy.walkAnim}
+   instance.animation.run = {total = 8, current = 1, img = EnemySkeleton.runAnim}
+   instance.animation.idle = {total = 4, current = 1, img = EnemySkeleton.walkAnim}
    instance.animation.draw = instance.animation.run.img[1]
 
    instance.physics = {}
@@ -44,43 +40,47 @@ function Enemy:new(x,y)
    table.insert(ActiveEnemies, instance)
 end
 
-function Enemy.loadAssets()
-   Enemy.runAnim = {}
+function EnemySkeleton.loadAssets()
+   EnemySkeleton.runAnim = {}
    for i=1,8 do
-      Enemy.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinRun/tile00"..i..".png")
+      EnemySkeleton.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinRun/tile00"..i..".png")
    end
 
-   --Enemy.walkAnim = {}
-   --for i=1,4 do
-      --Enemy.walkAnim[i] = love.graphics.newImage("assets/enemy/walk/"..i..".png")
-   --end
+   EnemySkeleton.walkAnim = {}
+   for i=1,4 do
+      EnemySkeleton.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinIdle/tile00"..i..".png")
+   end
 
-   Enemy.width = Enemy.runAnim[1]:getWidth()
-   Enemy.height = Enemy.runAnim[1]:getHeight()
+   EnemySkeleton.width = EnemySkeleton.runAnim[1]:getWidth()
+   EnemySkeleton.height = EnemySkeleton.runAnim[1]:getHeight()
 end
 
-function Enemy:update(dt)
+function EnemySkeleton:update(dt)
    self:syncPhysics()
    self:animate(dt)
+   self:playerDetected()
 end
 
-function Enemy:incrementRage()
-   self.rageCounter = self.rageCounter + 1
-   if self.rageCounter > self.rageTrigger then
+function EnemySkeleton:playerDetected()
+   
+   if math.max(self.x - Player.x, - (self.x - Player.x)) < 100 then
       self.state = "run"
-      self.speedMod = 3
-      self.rageCounter = 0
+      if self.x - Player.x > 0 then
+        self.xVel = - 65
+      elseif self.x - Player.x < 0 then
+        self.xVel = 65
+      end
    else
-      self.state = "walk"
-      self.speedMod = 1
+      self.state = "idle"
+      self.xVel = 0
    end
 end
 
-function Enemy:flipDirection()
+function EnemySkeleton:flipDirection()
    self.xVel = -self.xVel
 end
 
-function Enemy:animate(dt)
+function EnemySkeleton:animate(dt)
    self.animation.timer = self.animation.timer + dt
    if self.animation.timer > self.animation.rate then
       self.animation.timer = 0
@@ -88,7 +88,7 @@ function Enemy:animate(dt)
    end
 end
 
-function Enemy:setNewFrame()
+function EnemySkeleton:setNewFrame()
    local anim = self.animation[self.state]
    if anim.current < anim.total then
       anim.current = anim.current + 1
@@ -98,41 +98,39 @@ function Enemy:setNewFrame()
    self.animation.draw = anim.img[anim.current]
 end
 
-function Enemy:syncPhysics()
+function EnemySkeleton:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
-   self.physics.body:setLinearVelocity(self.xVel * self.speedMod, 100)
+   self.physics.body:setLinearVelocity(self.xVel, 100)
 end
 
-function Enemy:draw()
+function EnemySkeleton:draw()
    local scaleX = 1
    if self.xVel < 0 then
       scaleX = -1
    end
-   love.graphics.draw(self.animation.draw, self.x, self.y + self.offsetY, self.r, scaleX, 1, self.width / 2 + self.width * 0.075, self.height / 2)
+   love.graphics.draw(self.animation.draw, self.x, self.y + self.offsetY, self.r, scaleX, 1, self.width / 2, self.height / 2)
 end
 
-function Enemy.updateAll(dt)
+function EnemySkeleton.updateAll(dt)
    for i,instance in ipairs(ActiveEnemies) do
       instance:update(dt)
    end
 end
 
-function Enemy.drawAll()
+function EnemySkeleton.drawAll()
    for i,instance in ipairs(ActiveEnemies) do
       instance:draw()
    end
 end
 
-function Enemy.beginContact(a, b, collision)
+function EnemySkeleton.beginContact(a, b, collision)
    for i,instance in ipairs(ActiveEnemies) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
          end
-         instance:incrementRage()
-         instance:flipDirection()
       end
    end
 end
 
-return Enemy
+return EnemySkeleton
