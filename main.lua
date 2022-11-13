@@ -94,8 +94,11 @@ end
 
 function spawnEntities()
   for i,v in ipairs(Map.layers.entity.objects) do
-    if v.type == "enemy" then
+    if v.type == "enemyGoblin" then
       EnemyGoblin:new(v.x + v.width / 2, v.y + v.height / 2)
+    end
+    if v.type == "enemyEyes" then
+      EnemyEyes:new(v.x + v.width / 2, v.y + v.height / 2)
     end
   end
 end
