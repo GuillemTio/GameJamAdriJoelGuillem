@@ -1,15 +1,15 @@
 local EnemyEyes = {}
-EnemyEyes.__index = EnemyGoblin
+EnemyEyes.__index = EnemyEyes
 local Player = require("src/Player")
 
-local ActiveEnemies = {}
+local ActiveFlyingEnemies = {}
 
 function EnemyEyes.removeAll()
-   for i,v in ipairs(ActiveEnemies) do
+   for i,v in ipairs(ActiveFlyingEnemies) do
       v.physics.body:destroy()
    end
 
-   ActiveEnemies = {}
+   ActiveFlyingEnemies = {}
 end
 
 function EnemyEyes:new(x,y)
@@ -36,7 +36,6 @@ function EnemyEyes:new(x,y)
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.2)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
-   table.insert(ActiveEnemies, instance)
    --instance.physics.body:setMass(0)
    table.insert(ActiveFlyingEnemies, instance)
 end
@@ -115,19 +114,19 @@ function EnemyEyes:draw()
 end
 
 function EnemyEyes.updateAll(dt)
-   for i,instance in ipairs(ActiveEnemies) do
+   for i,instance in ipairs(ActiveFlyingEnemies) do
       instance:update(dt)
    end
 end
 
 function EnemyEyes.drawAll()
-   for i,instance in ipairs(ActiveEnemies) do
+   for i,instance in ipairs(ActiveFlyingEnemies) do
       instance:draw()
    end
 end
 
 function EnemyEyes.beginContact(a, b, collision)
-   for i,instance in ipairs(ActiveEnemies) do
+   for i,instance in ipairs(ActiveFlyingEnemies) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
