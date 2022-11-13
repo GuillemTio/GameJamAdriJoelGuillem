@@ -2,6 +2,7 @@ Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 Camera = Camera or require"src/Camera"
 EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
+EnemyEyes = EnemyEyes or require"src/EnemyGoblin"
 HUD = HUD or require"src/HUD"
 
 actorList = {} --Lista de elementos de juego
@@ -23,6 +24,7 @@ function love.load()
   background3 = love.graphics.newImage("src/textures/background/background_layer_3.png")
 
   EnemyGoblin.loadAssets()
+  EnemyEyes.loadAssets()
 
   Player:new()
   HUD:load()
@@ -39,6 +41,7 @@ function love.update(dt)
   World:update(dt)
   Player:update(dt)
   EnemyGoblin.updateAll(dt)
+  EnemyEyes.updateAll(dt)
   Camera:setPosition(Player.x, 0)
   HUD:update(dt)
 end
@@ -59,6 +62,7 @@ function love.draw()
 
   Player:draw()
   EnemyGoblin.drawAll()
+  EnemyEyes.drawAll()
 
   Camera:clear()
   HUD:draw()
