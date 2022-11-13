@@ -4,6 +4,7 @@ Camera = Camera or require"src/Camera"
 EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
 EnemyEyes = EnemyEyes or require"src/EnemyEyes"
 EnemySkeleton = EnemySkeleton or require"src/EnemySkeleton"
+BossMushroom = BossMushroom or require "src/BossMushroom"
 HUD = HUD or require"src/HUD"
 
 StartMenu = StartMenu or require"src/StartMenu"
@@ -31,6 +32,7 @@ function love.load()
   EnemyGoblin.loadAssets()
   EnemyEyes.loadAssets()
   EnemySkeleton.loadAssets()
+  BossMushroom.loadAssets()
 
   Player:new()
   HUD:load()
@@ -52,6 +54,7 @@ function love.update(dt)
   EnemyGoblin.updateAll(dt)
   EnemyEyes.updateAll(dt)
   EnemySkeleton.updateAll(dt)
+  BossMushroom.updateAll(dt)
   Camera:setPosition(Player.x, 0)
   HUD:update(dt)
 end
@@ -75,6 +78,7 @@ function love.draw()
   EnemyGoblin.drawAll()
   EnemyEyes.drawAll()
   EnemySkeleton.drawAll()
+  BossMushroom.drawAll()
 
   Camera:clear()
   HUD:draw()
@@ -93,6 +97,7 @@ function beginContact(a, b, collision)
   EnemyGoblin.beginContact(a, b, collision)
   EnemyEyes.beginContact(a, b, collision)
   EnemySkeleton.beginContact(a, b, collision)
+  BossMushroom.beginContact(a, b, collision)
   if a == Player.physics.fixture or b == Player.physics.fixture then
     Player:beginContact(a, b, collision)
   elseif Player.grappleactive then
@@ -116,6 +121,9 @@ function spawnEntities()
     end
     if v.type == "enemySkeleton" then
       EnemySkeleton:new(v.x + v.width / 2, v.y + v.height / 2)
+    end
+    if v.type == "enemyBossMushroom" then
+      BossMushroom:new(v.x + v.width / 2, v.y + v.height / 2)
     end
   end
 end
