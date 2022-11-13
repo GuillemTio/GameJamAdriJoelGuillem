@@ -21,10 +21,11 @@ function EnemyEyes:new(x,y)
 
    instance.speed = 0
    instance.xVel = instance.speed
+   instance.yVel = instance.speed
 
    instance.damage = 1
 
-   instance.state = "idle"
+   instance.state = "fly"
 
    instance.animation = {timer = 0, rate = 0.1}
    instance.animation.fly = {total = 8, current = 1, img = EnemyEyes.runAnim}
@@ -35,8 +36,13 @@ function EnemyEyes:new(x,y)
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.2)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
+<<<<<<< Updated upstream
    instance.physics.body:setMass(25)
    table.insert(ActiveEnemies, instance)
+=======
+   --instance.physics.body:setMass(0)
+   table.insert(ActiveFlyingEnemies, instance)
+>>>>>>> Stashed changes
 end
 
 function EnemyEyes.loadAssets()
@@ -57,16 +63,22 @@ end
 
 function EnemyEyes:playerDetected()
    
-   if math.max(self.x - Player.x, - (self.x - Player.x)) < 100 then
+   if math.max(self.x - Player.x, - (self.x - Player.x)) < 200 then
       self.state = "fly"
       if self.x - Player.x > 0 then
         self.xVel = - 65
       elseif self.x - Player.x < 0 then
         self.xVel = 65
       end
+      if self.y - Player.y > 0 then
+        self.yVel = - 65
+      elseif self.y -Player.y < 0 then
+        self.yVel = 65
+      end
    else
       self.state = "fly"
       self.xVel = 0
+      self.yVel = 0
    end
 end
 
@@ -94,7 +106,8 @@ end
 
 function EnemyEyes:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
-   self.physics.body:setLinearVelocity(self.xVel, 100)
+   self.physics.body:setLinearVelocity(self.xVel, self.yVel)
+   --self.physics.body:setLinearVelocity(0, self.yVel)
 end
 
 function EnemyEyes:draw()
