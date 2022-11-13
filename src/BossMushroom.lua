@@ -35,8 +35,8 @@ function BossMushroom:new(x, y)
    instance.isDying = false
 
    instance.animation = { timer = 0, rate = 0.1 }
-   instance.animation.run = { total = 8, current = 1, img = BossMushroom.runAnim }
-   instance.animation.idle = { total = 4, current = 1, img = BossMushroom.walkAnim }
+   instance.animation.run = { total = 4, current = 1, img = BossMushroom.runAnim }
+   instance.animation.idle = { total = 4, current = 1, img = BossMushroom.idleAnim }
    instance.animation.hit = { total = 4, current = 1, img = BossMushroom.hitAnim }
    instance.animation.death = { total = 4, current = 1, img = BossMushroom.deathAnim }
    instance.animation.draw = instance.animation.run.img[1]
@@ -54,53 +54,53 @@ end
 function BossMushroom.loadAssets()
    BossMushroom.runAnim = {}
    for i = 1, 8 do
-      BossMushroom.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinRun/tile00"
+      BossMushroom.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/MushroomRun/tile00"
          .. i .. ".png")
    end
 
-   BossMushroom.walkAnim = {}
+   BossMushroom.idleAnim = {}
    for i = 1, 4 do
-      BossMushroom.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinIdle/tile00"
+      BossMushroom.idleAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/MushroomIdle/tile00"
          .. i .. ".png")
    end
 
    BossMushroom.hitAnim = {}
    for i = 1, 4 do
-      BossMushroom.hitAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinHit/tile00"
+      BossMushroom.hitAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/MushroomHit/tile00"
          .. i .. ".png")
    end
 
    BossMushroom.deathAnim = {}
    for i = 1, 4 do
-      BossMushroom.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinDeath/tile00"
+      BossMushroom.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/MushroomDeath/tile00"
          .. i .. ".png")
    end
 
-   BossMushroom.width = BossMushroom.runAnim[1]:getWidth()
-   BossMushroom.height = BossMushroom.runAnim[1]:getHeight()
+   BossMushroom.width = BossMushroom.idleAnim[1]:getWidth()
+   BossMushroom.height = BossMushroom.idleAnim[1]:getHeight()
 end
 
-function BossMushroom:takeDamage(amount, goblinActor)
-   if goblinActor.health.current - amount > 0 then
-      goblinActor.health.current = goblinActor.health.current - amount
-      if goblinActor.xVel < 0 then
-         goblinActor.xVel = goblinActor.xVel + 150
+function BossMushroom:takeDamage(amount, mushroomActor)
+   if mushroomActor.health.current - amount > 0 then
+      mushroomActor.health.current = mushroomActor.health.current - amount
+      if mushroomActor.xVel < 0 then
+         mushroomActor.xVel = mushroomActor.xVel + 150
       else
-         goblinActor.xVel = goblinActor.xVel - 150
+         mushroomActor.xVel = mushroomActor.xVel - 150
       end
-      goblinActor.isHurt = true
+      mushroomActor.isHurt = true
    else
-      goblinActor.health.current = 0
-      goblinActor:die(goblinActor)
+      mushroomActor.health.current = 0
+      mushroomActor:die(mushroomActor)
    end
 
-   print(goblinActor.health.current)
+   print(mushroomActor.health.current)
 end
 
-function BossMushroom:die(goblinActor)
-   goblinActor.isDying = true
-   if not goblinActor.physics.body == nil then
-      goblinActor.physics.body:destroy()
+function BossMushroom:die(mushroomActor)
+   mushroomActor.isDying = true
+   if not mushroomActor.physics.body == nil then
+      mushroomActor.physics.body:destroy()
    end
    print("goblin died")
 end
@@ -133,7 +133,7 @@ function BossMushroom:incrementRage()
       self.speedMod = 3
       self.rageCounter = 0
    else
-      self.state = "walk"
+      self.state = "run"
       self.speedMod = 1
    end
 end
