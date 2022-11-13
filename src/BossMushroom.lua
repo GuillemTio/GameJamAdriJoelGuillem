@@ -19,8 +19,12 @@ function BossMushroom:new(x, y)
    instance.offsetY = -8
    instance.r = 0
 
-   instance.speed = 0
+   instance.speed = 100
+   instance.speedMod = 1
    instance.xVel = instance.speed
+
+   instance.rageCounter = 0
+   instance.rageTrigger = 3
 
    instance.health = { current = 2, max = 2 }
    instance.damage = 1
@@ -122,6 +126,19 @@ function BossMushroom:update(dt, instance)
    end
 end
 
+function BossMushroom:incrementRage()
+   self.rageCounter = self.rageCounter + 1
+   if self.rageCounter > self.rageTrigger then
+      self.state = "run"
+      self.speedMod = 3
+      self.rageCounter = 0
+   else
+      self.state = "walk"
+      self.speedMod = 1
+   end
+end
+
+
 function BossMushroom:playerDetected()
    if self.isHurt then
       self.state = "hit"
@@ -165,7 +182,7 @@ end
 
 function BossMushroom:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
-   self.physics.body:setLinearVelocity(self.xVel, 100)
+   self.physics.body:setLinearVelocity(self.xVel * self.speedMod , 100)
 end
 
 function BossMushroom:draw()
@@ -195,6 +212,7 @@ function BossMushroom.beginContact(a, b, collision)
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
          end
+         instance:incrementRage()
       end
    end
 end
