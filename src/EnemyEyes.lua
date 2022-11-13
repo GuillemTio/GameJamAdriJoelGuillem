@@ -40,7 +40,7 @@ function EnemyEyes:new(x,y)
    instance.physics = {}
    instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
-   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.041)
+   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.07, instance.height * 0.04)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
 
    table.insert(ActiveFlyingEnemies, instance)
@@ -85,10 +85,10 @@ function EnemyEyes:takeDamage(amount, eyeActor)
 end
 
 function EnemyEyes:die(eyeActor)
-   eyeActor.isDying = true
-   if not eyeActor.physics.body == nil then
+   if not eyeActor.isDying then
       eyeActor.physics.body:destroy()
    end
+   eyeActor.isDying = true
    print("goblin died")
 end
 
