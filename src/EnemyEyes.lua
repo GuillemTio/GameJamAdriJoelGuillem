@@ -28,31 +28,27 @@ function EnemyEyes:new(x,y)
    instance.state = "fly"
 
    instance.animation = {timer = 0, rate = 0.1}
-   instance.animation.fly = {total = 8, current = 1, img = EnemyEyes.runAnim}
-   instance.animation.draw = instance.animation.run.img[1]
+   instance.animation.fly = {total = 8, current = 1, img = EnemyEyes.flyAnim}
+   instance.animation.draw = instance.animation.fly.img[1]
 
    instance.physics = {}
    instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.2)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
-<<<<<<< Updated upstream
-   instance.physics.body:setMass(25)
    table.insert(ActiveEnemies, instance)
-=======
    --instance.physics.body:setMass(0)
    table.insert(ActiveFlyingEnemies, instance)
->>>>>>> Stashed changes
 end
 
 function EnemyEyes.loadAssets()
     EnemyEyes.flyAnim = {}
-   for i=0,7 do
-    EnemyEyes.flyAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Flyin_eye/eyeFlying/tile00"..i..".png")
+   for i=1,8 do
+    EnemyEyes.flyAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Flying_eye/eyeFlying/tile00"..i..".png")
    end
 
-   EnemyEyes.width = EnemyEyes.runAnim[1]:getWidth()
-   EnemyEyes.height = EnemyEyes.runAnim[1]:getHeight()
+   EnemyEyes.width = EnemyEyes.flyAnim[1]:getWidth()
+   EnemyEyes.height = EnemyEyes.flyAnim[1]:getHeight()
 end
 
 function EnemyEyes:update(dt)
