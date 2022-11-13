@@ -22,7 +22,7 @@ function EnemyGoblin:new(x,y)
    instance.speed = 0
    instance.xVel = instance.speed
 
-   self.health = {current = 2, max = 2}
+   instance.health = {current = 2, max = 2}
    instance.damage = 1
 
    instance.state = "idle"
@@ -57,39 +57,28 @@ function EnemyGoblin.loadAssets()
    EnemyGoblin.height = EnemyGoblin.runAnim[1]:getHeight()
 end
 
-function EnemyGoblin:takeDamage(amount)
-   if self.health.current - amount > 0 then
-      self.health.current = self.health.current - amount
+function EnemyGoblin:takeDamage(amount, goblinActor)
+   if goblinActor.health.current - amount > 0 then
+      goblinActor.health.current = goblinActor.health.current - amount
    else
-      self.health.current = 0
-      self:die()
+      goblinActor.health.current = 0
+      goblinActor:die(goblinActor)
    end
 
-   print(self.health.current)
+   print(goblinActor.health.current)
 end
 
-function EnemyGoblin:die()
-   self.alive = false
-   print("u died")
-end
-
-function EnemyGoblin:respawn()
-   if not self.alive then
-      for _, v in ipairs(ActiveEnemies) do
-         if v == self then
-            table.remove(ActiveEnemies, v)
-         end
-      end
-      for _, v in ipairs(actorList) do
-         if v == self then
-            table.remove(actorList, v)
-         end
+function EnemyGoblin:die(goblinActor)
+   for i, v in ipairs(ActiveEnemies) do
+      if (v == goblinActor) then
+         table.remove(ActiveEnemies,i)
       end
    end
+   print("goblin died")
 end
+
 
 function EnemyGoblin:update(dt)
-   self:respawn()
    self:syncPhysics()
    self:animate(dt)
    self:playerDetected()

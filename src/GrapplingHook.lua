@@ -36,7 +36,6 @@ end
 
 function GrapplingHook:update(dt)
 
-
     if self.collided then
         self:oncollision()
         self:checkdistancefromplayer(true)
