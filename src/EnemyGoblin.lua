@@ -32,7 +32,7 @@ function EnemyGoblin:new(x, y)
 
    instance.animation = { timer = 0, rate = 0.1 }
    instance.animation.run = { total = 8, current = 1, img = EnemyGoblin.runAnim }
-   instance.animation.idle = { total = 4, current = 1, img = EnemyGoblin.walkAnim }
+   instance.animation.idle = { total = 4, current = 1, img = EnemyGoblin.idleAnim }
    instance.animation.hit = { total = 4, current = 1, img = EnemyGoblin.hitAnim }
    instance.animation.death = { total = 4, current = 1, img = EnemyGoblin.deathAnim }
    instance.animation.draw = instance.animation.run.img[1]
@@ -54,9 +54,9 @@ function EnemyGoblin.loadAssets()
          .. i .. ".png")
    end
 
-   EnemyGoblin.walkAnim = {}
+   EnemyGoblin.idleAnim = {}
    for i = 1, 4 do
-      EnemyGoblin.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinIdle/tile00"
+      EnemyGoblin.idleAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinIdle/tile00"
          .. i .. ".png")
    end
 

@@ -32,7 +32,7 @@ function EnemySkeleton:new(x, y)
 
    instance.animation = { timer = 0, rate = 0.1 }
    instance.animation.run = { total = 4, current = 1, img = EnemySkeleton.runAnim }
-   instance.animation.idle = { total = 4, current = 1, img = EnemySkeleton.walkAnim }
+   instance.animation.idle = { total = 4, current = 1, img = EnemySkeleton.idleAnim }
    instance.animation.hit = { total = 4, current = 1, img = EnemySkeleton.hitAnim }
    instance.animation.death = { total = 4, current = 1, img = EnemySkeleton.deathAnim }
    instance.animation.draw = instance.animation.run.img[1]
@@ -53,9 +53,9 @@ function EnemySkeleton.loadAssets()
       EnemySkeleton.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Skeleton/skeletonWalk/tile00".. i .. ".png")
    end
 
-   EnemySkeleton.walkAnim = {}
+   EnemySkeleton.idleAnim = {}
    for i = 1, 4 do
-      EnemySkeleton.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Skeleton/skeletonIdle/tile00".. i .. ".png")
+      EnemySkeleton.idleAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Skeleton/skeletonIdle/tile00".. i .. ".png")
    end
 
    EnemySkeleton.hitAnim = {}
@@ -126,12 +126,12 @@ function EnemySkeleton:playerDetected()
       if self.animation.draw == self.animation.hit.img[4] then
          self.isHurt = false
       end
-   elseif math.max(self.x - Player.x, -(self.x - Player.x)) < 100 then
+   elseif math.max(self.x - Player.x, -(self.x - Player.x)) < 120 then
       self.state = "run"
       if self.x - Player.x > 0 then
-         self.xVel = -95
+         self.xVel = -115
       elseif self.x - Player.x < 0 then
-         self.xVel = 95
+         self.xVel = 115
       end
    else
       self.state = "idle"
