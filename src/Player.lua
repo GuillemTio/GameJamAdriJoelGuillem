@@ -10,6 +10,8 @@ function Player:new()
    self.image = "src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png"
    self.x = 50
    self.y = 0
+   self.startX = self.x
+   self.startY = self.y
    self.width = 50
    self.height = 37
    self.xVel = 0
@@ -19,10 +21,12 @@ function Player:new()
    self.friction = 3000
    self.gravity = 1500
    self.jumpAmount = -500
+   self.health = {current = 3, max = 3}
 
    self.graceTime = 0 
    self.graceDuration = 0.1
 
+   self.alive = true
    self.grappleactive = false
    self.grabbed = false
    self.direction = "right"
@@ -40,6 +44,7 @@ end
 
 function Player:update(dt)
    --Player.super.update(self,dt)
+   self:respawn()
    self:setState()
    self:setDirection()
    self:decreaseGraceTime(dt)
@@ -134,6 +139,30 @@ function Player:loadAssets()
    self.animation.height = self.animation.draw:getHeight()
 
 
+end
+
+function Player:takeDamage(amount)
+   if self.health.current - amount > 0 then
+      self.health.current = self.health.current - amount
+   else
+      self.health.current = 0
+      self:die()
+   end
+
+   print(self.health.current)
+end
+
+function Player:die()
+   self.alive = false
+   print("u died")
+end
+
+function Player:respawn()
+   if not self.alive then
+      self.physics.body:setPosition(self.startX, self.startY)
+      self.health.current = self.health.max
+      self.alive = true
+   end
 end
 
 function Player:applyGravity(dt)

@@ -69,9 +69,9 @@ function love.keypressed(key)
 end
 
 function beginContact(a, b, collision)
+  EnemyGoblin:beginContact(a, b, collision)
   if a == Player.physics.fixture or b == Player.physics.fixture then
     Player:beginContact(a, b, collision)
-
   elseif Player.grappleactive then
     if a == GrapplingHook.physics.fixture or b == GrapplingHook.physics.fixture then
       GrapplingHook:beginContact(a, b, collision)
