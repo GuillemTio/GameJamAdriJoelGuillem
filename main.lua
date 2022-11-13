@@ -2,7 +2,7 @@ Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 Camera = Camera or require"src/Camera"
 EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
-EnemyEyes = EnemyEyes or require"src/EnemyGoblin"
+EnemyEyes = EnemyEyes or require"src/EnemyEyes"
 HUD = HUD or require"src/HUD"
 
 StartMenu = StartMenu or require"src/StartMenu"
@@ -80,7 +80,7 @@ function love.keypressed(key)
   --for _,v in ipairs(actorList) do
 
   --end
-  Player:attack(key)
+  Player:attackkey(key)
   Player:jump(key)
   Player:grapplinghookkey(key)
 end
@@ -102,8 +102,11 @@ end
 
 function spawnEntities()
   for i,v in ipairs(Map.layers.entity.objects) do
-    if v.type == "enemy" then
+    if v.type == "enemyGoblin" then
       EnemyGoblin:new(v.x + v.width / 2, v.y + v.height / 2)
+    end
+    if v.type == "enemyEyes" then
+      EnemyEyes:new(v.x + v.width / 2, v.y + v.height / 2)
     end
   end
 end
