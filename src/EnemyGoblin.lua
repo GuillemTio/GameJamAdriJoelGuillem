@@ -27,9 +27,12 @@ function EnemyGoblin:new(x,y)
 
    instance.state = "idle"
 
+   instance.isHurt = false
+
    instance.animation = {timer = 0, rate = 0.1}
    instance.animation.run = {total = 8, current = 1, img = EnemyGoblin.runAnim}
    instance.animation.idle = {total = 4, current = 1, img = EnemyGoblin.walkAnim}
+   instance.animation.hit = {total = 4, current = 1, img = EnemyGoblin.hitAnim}
    instance.animation.draw = instance.animation.run.img[1]
 
    instance.physics = {}
@@ -53,6 +56,11 @@ function EnemyGoblin.loadAssets()
       EnemyGoblin.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinIdle/tile00"..i..".png")
    end
 
+   EnemyGoblin.hitAnim = {}
+   for i=1,4 do
+      EnemyGoblin.hitAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinHit/tile00"..i..".png")
+   end
+
    EnemyGoblin.width = EnemyGoblin.runAnim[1]:getWidth()
    EnemyGoblin.height = EnemyGoblin.runAnim[1]:getHeight()
 end
@@ -60,6 +68,12 @@ end
 function EnemyGoblin:takeDamage(amount, goblinActor)
    if goblinActor.health.current - amount > 0 then
       goblinActor.health.current = goblinActor.health.current - amount
+      if goblinActor.xVel < 0 then
+         goblinActor.xVel = goblinActor.xVel+150
+      else
+         goblinActor.xVel = goblinActor.xVel-150
+      end
+      goblinActor.isHurt = true
    else
       goblinActor.health.current = 0
       goblinActor:die(goblinActor)
@@ -71,6 +85,7 @@ end
 function EnemyGoblin:die(goblinActor)
    for i, v in ipairs(ActiveEnemies) do
       if (v == goblinActor) then
+         v.physics.body:destroy()
          table.remove(ActiveEnemies,i)
       end
    end
@@ -85,8 +100,12 @@ function EnemyGoblin:update(dt)
 end
 
 function EnemyGoblin:playerDetected()
-   
-   if math.max(self.x - Player.x, - (self.x - Player.x)) < 100 then
+   if self.isHurt then
+      self.state = "hit"
+      if self.animation.draw == self.animation.hit.img[4] then
+         self.isHurt = false
+      end
+   elseif math.max(self.x - Player.x, - (self.x - Player.x)) < 100 then
       self.state = "run"
       if self.x - Player.x > 0 then
         self.xVel = - 65
