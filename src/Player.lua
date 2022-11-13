@@ -25,6 +25,13 @@ function Player:new()
    self.attackRangeX = 40
    self.attackRangeY = 30
 
+   self.color = {
+      red = 1,
+      green = 1,
+      blue = 1,
+      speed = 3,
+   }
+
    self.graceTime = 0 
    self.graceDuration = 0.1
 
@@ -48,6 +55,7 @@ end
 
 function Player:update(dt)
    --Player.super.update(self,dt)
+   self:unTint(dt)
    self:respawn()
    self:setState()
    self:setDirection()
@@ -149,6 +157,7 @@ function Player:loadAssets()
 end
 
 function Player:takeDamage(amount)
+   self:tintRed()
    if self.health.current - amount > 0 then
       self.health.current = self.health.current - amount
    else
@@ -164,6 +173,11 @@ function Player:die()
    print("u died")
 end
 
+function Player:tintRed()
+   self.color.green = 0
+   self.color.blue = 0
+end
+
 function Player:respawn()
    if not self.alive or self.y > 730 then
       self.physics.body:setPosition(self.startX, self.startY)
@@ -172,6 +186,12 @@ function Player:respawn()
       self.grappleactive = false
       --EnemyGoblin.removeAll()
    end
+end
+
+function Player:unTint(dt)
+   self.color.red = math.min(self.color.red + self.color.speed * dt, 1)
+   self.color.green = math.min(self.color.green + self.color.speed * dt, 1)
+   self.color.blue = math.min(self.color.blue + self.color.speed * dt, 1)
 end
 
 function Player:applyGravity(dt)
@@ -327,7 +347,10 @@ function Player:draw()
    if self.direction == "left" then
       scaleX = -1
    end
+
+   love.graphics.setColor(self.color.red, self.color.green, self.color.blue)
    love.graphics.draw(self.animation.draw, self.x, self.y, 0, scaleX, 1, self.animation.width / 2, self.animation.height / 2)
+   love.graphics.setColor(1,1,1,1)
 
    if self.grappleactive then
       GrapplingHook:draw()
