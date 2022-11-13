@@ -16,7 +16,7 @@ function BossMushroom:new(x, y)
    local instance = setmetatable({}, BossMushroom)
    instance.x = x
    instance.y = y
-   instance.offsetY = -15
+   instance.offsetY = -25
    instance.r = 0
 
    instance.speed = 100
@@ -29,8 +29,9 @@ function BossMushroom:new(x, y)
    instance.health = { current = 10, max = 10 }
    instance.damage = 1
 
-   instance.state = "idle"
+   instance.state = "run"
 
+   instance.turned = false
    instance.isHurt = false
    instance.isDying = false
 
@@ -137,8 +138,18 @@ function BossMushroom:incrementRage()
    end
 end
 
-function BossMushroom:flipDirection()
-   self.xVel = -self.xVel
+function BossMushroom:flipDirection(turnRight)
+   if turnRight then
+      if self.xVel<0 then
+         print("girar")
+      self.xVel = -self.xVel
+      end
+
+   else
+      if self.xVel>0 then
+         self.xVel = -self.xVel
+      end
+   end
 end
 
 function BossMushroom:animate(dt)
@@ -186,15 +197,37 @@ function BossMushroom.drawAll()
 end
 
 function BossMushroom.beginContact(a, b, collision)
+   local nx, ny = collision:getNormal()
    for i, instance in ipairs(ActiveBoss) do
-      if a == instance.physics.fixture or b == instance.physics.fixture then
-        print("klk")
-         if a == Player.physics.fixture or b == Player.physics.fixture then
-            Player:takeDamage(instance.damage)
+      
+      if a == instance.physics.fixture then
+         if nx > 0 then
+            
+         elseif nx < 0 then
+         
          end
-         instance:flipDirection()
-         instance:incrementRage()
+      elseif b == instance.physics.fixture then
+         if a == Player.physics.fixture then
+            Player:takeDamage(instance.damage)
+         
+         elseif nx < 0 then
+            print("klk")
+            instance:flipDirection(false)
+            instance:incrementRage()
+         elseif nx > 0 then
+            print("nx>0")
+            instance:flipDirection(true)
+            instance:incrementRage()
+         end
       end
+      --if a == instance.physics.fixture or b == instance.physics.fixture then
+      --  print("klk")
+      --   if a == Player.physics.fixture or b == Player.physics.fixture then
+      --      Player:takeDamage(instance.damage)
+      --   end
+      --   instance:flipDirection()
+      --   instance:incrementRage()
+      --end
    end
 end
 

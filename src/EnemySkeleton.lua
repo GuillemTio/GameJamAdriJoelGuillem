@@ -7,6 +7,7 @@ local ActiveSkeletonEnemies = {}
 function EnemySkeleton.removeAll()
    for i, v in ipairs(ActiveSkeletonEnemies) do
       v.physics.body:destroy()
+      v.isDying = true
    end
 
    ActiveSkeletonEnemies = {}
@@ -73,30 +74,19 @@ function EnemySkeleton.loadAssets()
 end
 
 function EnemySkeleton:takeDamage(amount, skeletonActor)
-   if skeletonActor.health.current - amount > 0 then
-      skeletonActor.health.current = skeletonActor.health.current - amount
-      if skeletonActor.xVel < 0 then
-         skeletonActor.xVel = skeletonActor.xVel + 150
-      else
-         skeletonActor.xVel = skeletonActor.xVel - 150
-      end
-      skeletonActor.isHurt = true
-   else
-      skeletonActor.health.current = 0
-      skeletonActor:die(skeletonActor)
-      
-   end
 
-   print(skeletonActor.health.current)
+   skeletonActor.health.current = 0
+   skeletonActor:die(skeletonActor)
+
 end
 
 function EnemySkeleton:die(skeletonActor)
-
+   
    if not skeletonActor.isDying then
       skeletonActor.physics.body:destroy()
    end
    skeletonActor.isDying = true
-   print("goblin died")
+   print("isDying")
 end
 
 function EnemySkeleton:dying(instance)

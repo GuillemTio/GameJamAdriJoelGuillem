@@ -7,6 +7,7 @@ local ActiveFlyingEnemies = {}
 function EnemyEyes.removeAll()
    for i,v in ipairs(ActiveFlyingEnemies) do
       v.physics.body:destroy()
+      v.isDying = true
    end
 
    ActiveFlyingEnemies = {}

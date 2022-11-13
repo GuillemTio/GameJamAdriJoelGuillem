@@ -7,6 +7,7 @@ local ActiveEnemies = {}
 function EnemyGoblin.removeAll()
    for i, v in ipairs(ActiveEnemies) do
       v.physics.body:destroy()
+      v.isDying = true
    end
 
    ActiveEnemies = {}
