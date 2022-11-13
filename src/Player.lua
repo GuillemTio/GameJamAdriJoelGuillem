@@ -165,10 +165,12 @@ function Player:die()
 end
 
 function Player:respawn()
-   if not self.alive then
+   if not self.alive or self.y > 730 then
       self.physics.body:setPosition(self.startX, self.startY)
       self.health.current = self.health.max
       self.alive = true
+      self.grappleactive = false
+      --EnemyGoblin.removeAll()
    end
 end
 

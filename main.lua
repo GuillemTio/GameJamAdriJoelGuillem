@@ -2,7 +2,7 @@ Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 Camera = Camera or require"src/Camera"
 EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
-EnemyEyes = EnemyEyes or require"src/EnemyGoblin"
+EnemyEyes = EnemyEyes or require"src/EnemyEyes"
 HUD = HUD or require"src/HUD"
 
 actorList = {} --Lista de elementos de juego
