@@ -22,7 +22,7 @@ function GrapplingHook:new()
 
     self.firstY = self.y
     self.currentYDistance = 0
-    self.maxYDistanceToGrab = 180
+    self.maxYDistanceToGrab = 150
     self.distanceToLetGo = 40
 
     self.collided = false
@@ -35,7 +35,7 @@ function GrapplingHook:new()
 end
 
 function GrapplingHook:update(dt)
-
+    
     if self.collided then
         self:oncollision()
         self:checkdistancefromplayer(true)
@@ -57,27 +57,34 @@ end
 
 function GrapplingHook:checkdistancefromplayer(playeriscoming)
     if playeriscoming then
+        
         local actualDistanceFromPlayer = math.sqrt(((self.x - Player.x) ^ 2) + ((-(self.y - Player.y)) ^ 2))
         if actualDistanceFromPlayer < self.distanceToLetGo then
-            Player.grappleactive = false
             Player.grabbed = false
             --Player.grounded = false
             for _, v in ipairs(actorList) do
-                if v == self then
-                    table.remove(actorList, v)
+                if v == GrapplingHook then
+                    print("hola?")
+                    actorList[_].physics.body:destroy()
+                    table.remove(actorList, _)
                 end
             end
+            Player.grappleactive = false
         end
     else
         if self.currentYDistance < self.maxYDistanceToGrab then
             self.currentYDistance = -(self.y - self.firstY)
         else
-            Player.grappleactive = false
             for _, v in ipairs(actorList) do
-                if v == self then
-                    table.remove(actorList, v)
+                --print(v.y)
+                --print (self.y)
+                --print(Player.hook)
+                if v == GrapplingHook then
+                    actorList[_].physics.body:destroy()
+                    table.remove(actorList, _)
                 end
             end
+            Player.grappleactive = false
         end
     end
 end

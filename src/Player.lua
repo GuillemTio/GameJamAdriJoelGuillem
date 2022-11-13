@@ -278,18 +278,20 @@ end
 function Player:grapplinghookkey(key)
    local g
    if (key == "l") and not self.grappleactive then
+      GrapplingHook:new()
+      table.insert(actorList, GrapplingHook)
       self.grappleactive = true
-      g = GrapplingHook:new()
-      table.insert(actorList, g)
 
    elseif (key == "l") and self.grappleactive then
-      self.grappleactive = false
       if self.grabbed then
          self.grabbed = false
          self.grounded = false
       end
-
+      print(1)
+      print(g)
+      print(GrapplingHook)
       table.remove(actorList, g)
+      self.grappleactive = false
    end
    -- si le vuelvo a dar se cancela CHECK
 end
