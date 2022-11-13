@@ -4,38 +4,68 @@ local StartMenu = Actor:extend()
 local w, h = love.graphics.getDimensions()
 
 function StartMenu:new()
-    local font = love.graphics.newFont("src/textures/pong.ttf", 40)
-    love.graphics.setFont(font)
+    self.background = love.graphics.newImage("src/textures/background_layer_1.png")
+    self.background2 = love.graphics.newImage("src/textures/background_layer_2.png")
+    self.background3 = love.graphics.newImage("src/textures/background_layer_3.png")
+
+    self.woodButton = love.graphics.newImage("src/textures/cartel.png")
+
+    self.font = love.graphics.newFont("src/font/EnchantedLand.otf", 40)
+    love.graphics.setFont(self.font)
     self.fontSize = 1
 
-    self.tittle = "GOBBLINCHASE"
-    self.titleX = 100
-    self.titleY = 50
+    self.tittle = "BROOK THE HOOK"
+    self.titleX = w/5
+    self.titleY = h/17
 
-    self.startButtonPosX = w/3
-    self.startButtonPosY = h/3
+    self.imageStartPosX = w/2.75
+    self.imageStartPosY = h/4
+    self.startButtonPosX = w/2.45
+    self.startButtonPosY = h/2
 
-    self.quitButtonPosX = w/3
-    self.quitButtonPosY = h - 100
+    self.imageQuitPosX = w/2.75
+    self.imageQuitPosY = h/2
+    self.quitButtonPosX = w/2.45
+    self.quitButtonPosY = h - 175
 
-    self.rectangleWidth, self.rectangleHeight = 150, 75
-
-    self.mousePositionX, self.mousePositionY = love.mouse.getPosition()
+    self.rectangleWidth, self.rectangleHeight = 250, 150
 end
 
 function StartMenu:update(dt)
-    if(love.mouse.isDown(1))then
-        if(self.mousePositionX> self.startButtonPosX and self.mousePositionY > self.startButtonPosY) then
+    self.mousePositionX, self.mousePositionY = love.mouse.getPosition()
+
+    if(love.mouse.isDown(1)) then
+        if ((self.mousePositionX > self.startButtonPosX and self.mousePositionX < self.rectangleWidth + self.startButtonPosX) and (self.mousePositionY > self.startButtonPosY and self.mousePositionY < self.rectangleHeight + self.startButtonPosY)) then
             print("startinggame")
+            --MAP_LEVEL
         end
-        if(self.mousePositionX> self.quitButtonPosX and self.mousePositionY > self.startButtonPosY) then
+        if ((self.mousePositionX > self.quitButtonPosX and self.mousePositionX < self.rectangleWidth + self.quitButtonPosX) and (self.mousePositionY > self.quitButtonPosY and self.mousePositionY < self.rectangleHeight + self.quitButtonPosY)) then
             love.event.quit()
         end
     end
 end
 
 function StartMenu:draw()
-    love.graphics.print(self.tittle, self.titleX, self.titleY, 0, self.fontSize*2, self.fontSize*2) 
+    love.graphics.draw(self.background, 0, 0, 0, 5, 5) -- this is for our future background, it should be always before the map
+    love.graphics.draw(self.background2, 0, 0, 0, 5, 5)
+    love.graphics.draw(self.background3, 0, 0, 0, 5, 5)
+
+    
+
+    love.graphics.print(self.tittle, self.titleX, self.titleY, 0, self.fontSize * 3, self.fontSize * 3) 
+
+    love.graphics.draw(self.woodButton,self.imageQuitPosX, self.imageQuitPosY)
+    love.graphics.draw(self.woodButton,self.imageStartPosX, self.imageStartPosY, 0, 1, 1)
+
+    love.graphics.print("START",self.startButtonPosX + 30, self.startButtonPosY + 35, 0, self.fontSize * 1.5 , self.fontSize * 1.5) 
+    love.graphics.print("QUIT",self.quitButtonPosX + 50, self.quitButtonPosY + 40, 0, self.fontSize * 1.5 , self.fontSize * 1.5) 
+
+
     love.graphics.rectangle("line", self.startButtonPosX, self.startButtonPosY, self.rectangleWidth, self.rectangleHeight)
     love.graphics.rectangle("line", self.quitButtonPosX, self.quitButtonPosY, self.rectangleWidth, self.rectangleHeight)
+
 end
+
+
+
+return StartMenu
