@@ -5,12 +5,16 @@ EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
 EnemyEyes = EnemyEyes or require"src/EnemyEyes"
 HUD = HUD or require"src/HUD"
 
+StartMenu = StartMenu or require"src/StartMenu"
+
 actorList = {} --Lista de elementos de juego
 
 local STI = require("src/sti")
 love.graphics.setDefaultFilter("nearest", "nearest")
 
 function love.load()
+  --StartMenu:new()
+
   Map = STI("src/map/Map1.lua", { "box2d" })
   World = love.physics.newWorld(0, 0) -- takes x and y velocity for the World, for example to create gravity
   World:setCallbacks(beginContact, endContact)
@@ -38,6 +42,9 @@ function love.update(dt)
   --for _,v in ipairs(actorList) do
   --v:update(dt)
   --end
+
+  --StartMenu:update(dt)
+
   World:update(dt)
   Player:update(dt)
   EnemyGoblin.updateAll(dt)
@@ -50,6 +57,7 @@ function love.draw()
   --for _,v in ipairs(actorList) do
   --v:draw()
   --end
+  --StartMenu:draw()
 
   love.graphics.draw(background, 0, 0, 0, 5, 5) -- this is for our future background, it should be always before the map
   love.graphics.draw(background2, 0, 0, 0, 5, 5)
