@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="286" height="15" tilewidth="24" tileheight="24" infinite="0" nextlayerid="4" nextobjectid="152">
+<map version="1.8" tiledversion="1.8.5" orientation="orthogonal" renderorder="right-down" width="286" height="15" tilewidth="24" tileheight="24" infinite="0" nextlayerid="4" nextobjectid="151">
  <editorsettings>
   <export target="../Map1.lua" format="lua"/>
  </editorsettings>
@@ -41,64 +41,64 @@
 </data>
  </layer>
  <objectgroup color="#4eff0e" id="3" name="entity">
-  <object id="121" name="EnemyGoblin" class="enemyGoblin" x="249.334" y="310">
+  <object id="121" name="EnemyGoblin" type="enemyGoblin" x="249.334" y="310">
    <point/>
   </object>
-  <object id="122" name="EnemyGoblin" class="enemyGoblin" x="1052" y="188.667">
+  <object id="122" name="EnemyGoblin" type="enemyGoblin" x="1052" y="188.667">
    <point/>
   </object>
-  <object id="123" name="EnemyGoblin" class="enemyGoblin" x="1436.67" y="305.333">
+  <object id="123" name="EnemyGoblin" type="enemyGoblin" x="1436.67" y="305.333">
    <point/>
   </object>
-  <object id="124" name="EnemyGoblin" class="enemyGoblin" x="1777.33" y="162.333">
+  <object id="124" name="EnemyGoblin" type="enemyGoblin" x="1777.33" y="162.333">
    <point/>
   </object>
-  <object id="125" name="EnemyGoblin" class="enemyGoblin" x="4070" y="90.6667">
+  <object id="125" name="EnemyGoblin" type="enemyGoblin" x="4070" y="90.6667">
    <point/>
   </object>
-  <object id="126" name="EnemyGoblin" class="enemyGoblin" x="4692.67" y="91.3333">
+  <object id="126" name="EnemyGoblin" type="enemyGoblin" x="4692.67" y="91.3333">
    <point/>
   </object>
-  <object id="127" name="EnemyGoblin" class="enemyGoblin" x="4520" y="284.667">
+  <object id="127" name="EnemyGoblin" type="enemyGoblin" x="4520" y="284.667">
    <point/>
   </object>
-  <object id="128" name="EnemyGoblin" class="enemyGoblin" x="4765.33" y="284.667">
+  <object id="128" name="EnemyGoblin" type="enemyGoblin" x="4765.33" y="284.667">
    <point/>
   </object>
-  <object id="130" name="EnemyGoblin" class="enemyGoblin" x="5396" y="306.667">
+  <object id="130" name="EnemyGoblin" type="enemyGoblin" x="5396" y="306.667">
    <point/>
   </object>
-  <object id="135" name="EnemyEyes" class="enemyEyes" x="578" y="205">
+  <object id="135" name="EnemyEyes" type="enemyEyes" x="578" y="205">
    <point/>
   </object>
-  <object id="138" name="EnemyEyes" class="enemyEyes" x="1260" y="149">
+  <object id="138" name="EnemyEyes" type="enemyEyes" x="1260" y="149">
    <point/>
   </object>
-  <object id="139" name="EnemyEyes" class="enemyEyes" x="2417" y="179">
+  <object id="139" name="EnemyEyes" type="enemyEyes" x="2417" y="179">
    <point/>
   </object>
-  <object id="140" name="EnemyEyes" class="enemyEyes" x="3218" y="98">
+  <object id="140" name="EnemyEyes" type="enemyEyes" x="3218" y="98">
    <point/>
   </object>
-  <object id="142" name="EnemyEyes" class="enemyEyes" x="5062" y="71">
+  <object id="142" name="EnemyEyes" type="enemyEyes" x="5062" y="71">
    <point/>
   </object>
-  <object id="143" name="EnemySkeleton" class="enemySkeleton" x="2099" y="327">
+  <object id="143" name="EnemySkeleton" type="enemySkeleton" x="2099" y="327">
    <point/>
   </object>
-  <object id="144" name="EnemySkeleton" class="enemySkeleton" x="2632" y="165">
+  <object id="144" name="EnemySkeleton" type="enemySkeleton" x="2632" y="165">
    <point/>
   </object>
-  <object id="145" name="EnemySkeleton" class="enemySkeleton" x="2751" y="240">
+  <object id="145" name="EnemySkeleton" type="enemySkeleton" x="2751" y="240">
    <point/>
   </object>
-  <object id="146" name="EnemySkeleton" class="enemySkeleton" x="3676" y="211">
+  <object id="146" name="EnemySkeleton" type="enemySkeleton" x="3676" y="211">
    <point/>
   </object>
-  <object id="147" name="EnemySkeleton" class="enemySkeleton" x="3434" y="233">
+  <object id="147" name="EnemySkeleton" type="enemySkeleton" x="3434" y="233">
    <point/>
   </object>
-  <object id="150" name="BossMushroom" class="enemyBossMushroom" x="6403" y="271">
+  <object id="150" name="BossMushroom" type="bossMushroom" x="6414" y="282">
    <point/>
   </object>
  </objectgroup>

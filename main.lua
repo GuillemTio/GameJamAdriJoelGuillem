@@ -122,7 +122,7 @@ function spawnEntities()
     if v.type == "enemySkeleton" then
       EnemySkeleton:new(v.x + v.width / 2, v.y + v.height / 2)
     end
-    if v.type == "enemyBossMushroom" then
+    if v.type == "bossMushroom" then
       BossMushroom:new(v.x + v.width / 2, v.y + v.height / 2)
     end
   end

@@ -13,7 +13,8 @@
         "beginContact",
         "spawnEntities",
         "v",
-        "terrain"
+        "terrain",
+        "self"
     ],
     "Lua.diagnostics.disable": [
         "param-type-mismatch",
