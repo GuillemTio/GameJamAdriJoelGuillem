@@ -8,8 +8,10 @@ Player = {} -- Joel(07/11): no se si esto serà lo que da el problema / Joel(07/
 function Player:new()
    --Player.super.new(self,"src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png",400,500,20,1,0)
    self.image = "src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png"
-   self.x = 100
+   self.x = 50
    self.y = 0
+   self.startX = self.x
+   self.startY = self.y
    self.width = 50
    self.height = 37
    self.xVel = 0
@@ -19,10 +21,12 @@ function Player:new()
    self.friction = 3000
    self.gravity = 1500
    self.jumpAmount = -500
+   self.health = {current = 3, max = 3}
 
    self.graceTime = 0 
    self.graceDuration = 0.1
 
+   self.alive = true
    self.grappleactive = false
    self.grabbed = false
    self.direction = "right"
@@ -34,12 +38,13 @@ function Player:new()
    self.physics = {}
    self.physics.body = love.physics.newBody(World, self.x, self.y, "dynamic")
    self.physics.body:setFixedRotation(true)
-   self.physics.shape = love.physics.newRectangleShape(self.width / 2, self.height)
+   self.physics.shape = love.physics.newRectangleShape(self.width / 2.3, self.height)
    self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape)
 end
 
 function Player:update(dt)
    --Player.super.update(self,dt)
+   self:respawn()
    self:setState()
    self:setDirection()
    self:decreaseGraceTime(dt)
@@ -136,6 +141,30 @@ function Player:loadAssets()
 
 end
 
+function Player:takeDamage(amount)
+   if self.health.current - amount > 0 then
+      self.health.current = self.health.current - amount
+   else
+      self.health.current = 0
+      self:die()
+   end
+
+   print(self.health.current)
+end
+
+function Player:die()
+   self.alive = false
+   print("u died")
+end
+
+function Player:respawn()
+   if not self.alive then
+      self.physics.body:setPosition(self.startX, self.startY)
+      self.health.current = self.health.max
+      self.alive = true
+   end
+end
+
 function Player:applyGravity(dt)
    if not self.grounded then
       self.yVel = self.yVel + self.gravity * dt
@@ -144,21 +173,9 @@ end
 
 function Player:move(dt)
    if love.keyboard.isDown("d", "right") then
-      if self.xVel < self.maxSpeed then
-         if self.xVel + self.acceleration * dt < self.maxSpeed then
-            self.xVel = self.xVel + self.acceleration * dt
-         else
-            self.xVel = self.maxSpeed
-         end
-      end
+      self.xVel = math.min(self.xVel + self.acceleration * dt, self.maxSpeed)
    elseif love.keyboard.isDown("a", "left") then
-      if self.xVel > -self.maxSpeed then
-         if self.xVel - self.acceleration * dt > -self.maxSpeed then
-            self.xVel = self.xVel - self.acceleration * dt
-         else
-            self.xVel = -self.maxSpeed
-         end
-      end
+      self.xVel = math.max(self.xVel - self.acceleration * dt, -self.maxSpeed)
    else
       self:applyFriction(dt)
    end
@@ -166,17 +183,9 @@ end
 
 function Player:applyFriction(dt)
    if self.xVel > 0 then
-      if self.xVel - self.friction * dt > 0 then
-         self.xVel = self.xVel - self.friction * dt
-      else
-         self.xVel = 0
-      end
+      self.xVel = math.max(self.xVel - self.friction * dt, 0)
    elseif self.xVel < 0 then
-      if self.xVel + self.friction * dt < 0 then
-         self.xVel = self.xVel + self.friction * dt
-      else
-         self.xVel = 0
-      end
+      self.xVel = math.min(self.xVel + self.friction * dt, 0)
    end
 end
 
@@ -198,10 +207,14 @@ function Player:beginContact(a, b, collision)
    if a == self.physics.fixture then
       if ny > 0 then
          self:land(collision)
+      elseif ny < 0 then
+         self.yVel = 0
       end
    elseif b == self.physics.fixture then
       if ny < 0 then
          self:land(collision)
+      elseif ny > 0 then
+         self.yVel = 0
       end
    end
 end
@@ -214,7 +227,7 @@ function Player:land(collision)
 end
 
 function Player:jump(key)
-   if (key == "w") then
+   if (key == "space") then
       if self.graceTime>0 or self.grounded then
          self.yVel = self.jumpAmount
          self.grounded = false
@@ -225,12 +238,12 @@ end
 
 function Player:grapplinghookkey(key)
    local g
-   if (key == "e") and not self.grappleactive then
+   if (key == "l") and not self.grappleactive then
       self.grappleactive = true
       g = GrapplingHook:new()
       table.insert(actorList, g)
 
-   elseif (key == "e") and self.grappleactive then
+   elseif (key == "l") and self.grappleactive then
       self.grappleactive = false
       if self.grabbed then
          self.grabbed = false
