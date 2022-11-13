@@ -34,7 +34,7 @@ function EnemyEyes:new(x,y)
    instance.physics = {}
    instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
-   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.2)
+   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.041)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    --instance.physics.body:setMass(0)
    table.insert(ActiveFlyingEnemies, instance)
@@ -65,9 +65,9 @@ function EnemyEyes:playerDetected()
       elseif self.x - Player.x < 0 then
         self.xVel = 65
       end
-      if self.y - Player.y > 0 then
+      if self.y - Player.y > -5 then
         self.yVel = - 65
-      elseif self.y -Player.y < 0 then
+      elseif self.y -Player.y < -5 then
         self.yVel = 65
       end
    else
