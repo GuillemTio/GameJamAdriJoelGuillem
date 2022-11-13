@@ -16,7 +16,7 @@ function BossMushroom:new(x, y)
    local instance = setmetatable({}, BossMushroom)
    instance.x = x
    instance.y = y
-   instance.offsetY = -8
+   instance.offsetY = -15
    instance.r = 0
 
    instance.speed = 100
@@ -26,7 +26,7 @@ function BossMushroom:new(x, y)
    instance.rageCounter = 0
    instance.rageTrigger = 3
 
-   instance.health = { current = 2, max = 2 }
+   instance.health = { current = 10, max = 10 }
    instance.damage = 1
 
    instance.state = "idle"
@@ -35,7 +35,7 @@ function BossMushroom:new(x, y)
    instance.isDying = false
 
    instance.animation = { timer = 0, rate = 0.1 }
-   instance.animation.run = { total = 4, current = 1, img = BossMushroom.runAnim }
+   instance.animation.run = { total = 8, current = 1, img = BossMushroom.runAnim }
    instance.animation.idle = { total = 4, current = 1, img = BossMushroom.idleAnim }
    instance.animation.hit = { total = 4, current = 1, img = BossMushroom.hitAnim }
    instance.animation.death = { total = 4, current = 1, img = BossMushroom.deathAnim }
@@ -44,7 +44,7 @@ function BossMushroom:new(x, y)
    instance.physics = {}
    instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
-   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.2)
+   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.25, instance.height * 0.5)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(25)
    table.insert(ActiveBoss, instance)
@@ -98,10 +98,10 @@ function BossMushroom:takeDamage(amount, mushroomActor)
 end
 
 function BossMushroom:die(mushroomActor)
-   mushroomActor.isDying = true
-   if not mushroomActor.physics.body == nil then
-      mushroomActor.physics.body:destroy()
-   end
+    if not mushroomActor.isDying then
+        mushroomActor.physics.body:destroy()
+     end
+     mushroomActor.isDying = true
    print("goblin died")
 end
 
@@ -120,7 +120,6 @@ function BossMushroom:update(dt, instance)
       self:animate(dt)
    if not self.isDying then
       self:syncPhysics()
-      self:playerDetected()
    else
       self:dying(instance)
    end
@@ -135,26 +134,6 @@ function BossMushroom:incrementRage()
    else
       self.state = "run"
       self.speedMod = 1
-   end
-end
-
-
-function BossMushroom:playerDetected()
-   if self.isHurt then
-      self.state = "hit"
-      if self.animation.draw == self.animation.hit.img[4] then
-         self.isHurt = false
-      end
-   elseif math.max(self.x - Player.x, -(self.x - Player.x)) < 100 then
-      self.state = "run"
-      if self.x - Player.x > 0 then
-         self.xVel = -65
-      elseif self.x - Player.x < 0 then
-         self.xVel = 65
-      end
-   else
-      self.state = "idle"
-      self.xVel = 0
    end
 end
 
@@ -190,7 +169,7 @@ function BossMushroom:draw()
    if self.xVel < 0 then
       scaleX = -1
    end
-   love.graphics.draw(self.animation.draw, self.x, self.y + self.offsetY, self.r, scaleX, 1, self.width / 2,
+   love.graphics.draw(self.animation.draw, self.x, self.y + self.offsetY, self.r, scaleX * 2.5, 2.5, self.width / 2,
       self.height / 2)
 end
 
@@ -209,9 +188,11 @@ end
 function BossMushroom.beginContact(a, b, collision)
    for i, instance in ipairs(ActiveBoss) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
+        print("klk")
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
          end
+         instance:flipDirection()
          instance:incrementRage()
       end
    end
