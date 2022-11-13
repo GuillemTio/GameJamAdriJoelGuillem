@@ -160,6 +160,13 @@ function Player:takeDamage(amount)
    self:tintRed()
    if self.health.current - amount > 0 then
       self.health.current = self.health.current - amount
+      if self.direction == "right" then
+         self.xVel = self.xVel - 500
+         self.yVel = self.yVel - 200
+      else
+         self.xVel = self.xVel + 500
+         self.yVel = self.yVel - 300
+      end
    else
       self.health.current = 0
       self:die()
@@ -180,11 +187,14 @@ end
 
 function Player:respawn()
    if not self.alive or self.y > 730 then
-      self.physics.body:setPosition(self.startX, self.startY)
-      self.health.current = self.health.max
-      self.alive = true
-      self.grappleactive = false
-      --EnemyGoblin.removeAll()
+      EnemyEyes.removeAll()
+      EnemyEyes.removeAll()
+      love.load()
+      --self.physics.body:setPosition(self.startX, self.startY)
+      --self.health.current = self.health.max
+      --self.alive = true
+      --self.grappleactive = false
+
    end
 end
 

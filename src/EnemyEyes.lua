@@ -27,8 +27,13 @@ function EnemyEyes:new(x,y)
 
    instance.state = "fly"
 
+   instance.isHurt = false
+   instance.isDying = false
+
    instance.animation = {timer = 0, rate = 0.1}
    instance.animation.fly = {total = 8, current = 1, img = EnemyEyes.flyAnim}
+   instance.animation.hit = { total = 4, current = 1, img = EnemyEyes.hitAnim }
+   instance.animation.death = { total = 4, current = 1, img = EnemyEyes.deathAnim }
    instance.animation.draw = instance.animation.fly.img[1]
 
    instance.physics = {}
@@ -36,7 +41,7 @@ function EnemyEyes:new(x,y)
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.041)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
-   --instance.physics.body:setMass(0)
+
    table.insert(ActiveFlyingEnemies, instance)
 end
 
@@ -46,19 +51,73 @@ function EnemyEyes.loadAssets()
     EnemyEyes.flyAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Flying_eye/eyeFlying/tile00"..i..".png")
    end
 
+   EnemyEyes.hitAnim = {}
+   for i = 1, 4 do
+      EnemyEyes.hitAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Flying_eye/eyeHit/tile00".. i .. ".png")
+   end
+
+   EnemyEyes.deathAnim = {}
+   for i = 1, 4 do
+      EnemyEyes.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Flying_eye/eyeDeath/tile00".. i .. ".png")
+   end
+
    EnemyEyes.width = EnemyEyes.flyAnim[1]:getWidth()
    EnemyEyes.height = EnemyEyes.flyAnim[1]:getHeight()
 end
 
-function EnemyEyes:update(dt)
-   self:syncPhysics()
+function EnemyEyes:takeDamage(amount, eyeActor)
+   if eyeActor.health.current - amount > 0 then
+      eyeActor.health.current = eyeActor.health.current - amount
+      if eyeActor.xVel < 0 then
+         eyeActor.xVel = eyeActor.xVel + 150
+      else
+         eyeActor.xVel = eyeActor.xVel - 150
+      end
+      eyeActor.isHurt = true
+   else
+      eyeActor.health.current = 0
+      eyeActor:die(eyeActor)
+   end
+
+   print(eyeActor.health.current)
+end
+
+function EnemyEyes:die(eyeActor)
+   eyeActor.isDying = true
+   if not eyeActor.physics.body == nil then
+      eyeActor.physics.body:destroy()
+   end
+   print("goblin died")
+end
+
+function EnemyEyes:dying(instance)
+   self.state = "death"
+   if self.animation.draw == self.animation.death.img[4] then
+      for i, v in ipairs(ActiveFlyingEnemies) do
+         if (v == instance) then
+            table.remove(ActiveFlyingEnemies, i)
+         end
+      end
+   end
+end
+
+function EnemyEyes:update(dt, instance)
    self:animate(dt)
-   self:playerDetected()
+   if not self.isDying then
+      self:syncPhysics()
+      self:playerDetected()
+   else
+      self:dying(instance)
+   end
 end
 
 function EnemyEyes:playerDetected()
-   
-   if math.max(self.x - Player.x, - (self.x - Player.x)) < 200 then
+   if self.isHurt then
+      self.state = "hit"
+      if self.animation.draw == self.animation.hit.img[4] then
+         self.isHurt = false
+      end
+   elseif math.max(self.x - Player.x, - (self.x - Player.x)) < 200 then
       self.state = "fly"
       if self.x - Player.x > 0 then
         self.xVel = - 65
@@ -102,7 +161,6 @@ end
 function EnemyEyes:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
    self.physics.body:setLinearVelocity(self.xVel, self.yVel)
-   --self.physics.body:setLinearVelocity(0, self.yVel)
 end
 
 function EnemyEyes:draw()
@@ -115,7 +173,7 @@ end
 
 function EnemyEyes.updateAll(dt)
    for i,instance in ipairs(ActiveFlyingEnemies) do
-      instance:update(dt)
+      instance:update(dt, instance)
    end
 end
 

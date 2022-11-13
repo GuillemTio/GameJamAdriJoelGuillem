@@ -95,7 +95,9 @@ end
 
 function EnemyGoblin:die(goblinActor)
    goblinActor.isDying = true
-   goblinActor.physics.body:destroy()
+   if not goblinActor.physics.body == nil then
+      goblinActor.physics.body:destroy()
+   end
    print("goblin died")
 end
 
@@ -114,7 +116,6 @@ function EnemyGoblin:update(dt, instance)
       self:animate(dt)
    if not self.isDying then
       self:syncPhysics()
-      self:animate(dt)
       self:playerDetected()
    else
       self:dying(instance)
