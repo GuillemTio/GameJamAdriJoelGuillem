@@ -2,14 +2,14 @@ local BossMushroom = {}
 BossMushroom.__index = BossMushroom
 local Player = require("src/Player")
 
-local ActiveEnemies = {}
+local ActiveBoss = {}
 
 function BossMushroom.removeAll()
-   for i, v in ipairs(ActiveEnemies) do
+   for i, v in ipairs(ActiveBoss) do
       v.physics.body:destroy()
    end
 
-   ActiveEnemies = {}
+   ActiveBoss = {}
 end
 
 function BossMushroom:new(x, y)
@@ -47,7 +47,7 @@ function BossMushroom:new(x, y)
    instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.2)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(25)
-   table.insert(ActiveEnemies, instance)
+   table.insert(ActiveBoss, instance)
    table.insert(actorList, instance)
 end
 
@@ -108,9 +108,9 @@ end
 function BossMushroom:dying(instance)
    self.state = "death"
    if self.animation.draw == self.animation.death.img[4] then
-      for i, v in ipairs(ActiveEnemies) do
+      for i, v in ipairs(ActiveBoss) do
          if (v == instance) then
-            table.remove(ActiveEnemies, i)
+            table.remove(ActiveBoss, i)
          end
       end
    end
@@ -195,19 +195,19 @@ function BossMushroom:draw()
 end
 
 function BossMushroom.updateAll(dt)
-   for i, instance in ipairs(ActiveEnemies) do
+   for i, instance in ipairs(ActiveBoss) do
       instance:update(dt, instance)
    end
 end
 
 function BossMushroom.drawAll()
-   for i, instance in ipairs(ActiveEnemies) do
+   for i, instance in ipairs(ActiveBoss) do
       instance:draw()
    end
 end
 
 function BossMushroom.beginContact(a, b, collision)
-   for i, instance in ipairs(ActiveEnemies) do
+   for i, instance in ipairs(ActiveBoss) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)

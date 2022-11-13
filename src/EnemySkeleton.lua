@@ -2,17 +2,17 @@ local EnemySkeleton = {}
 EnemySkeleton.__index = EnemySkeleton
 local Player = require("src/Player")
 
-local ActiveEnemies = {}
+local ActiveSkeletonEnemies = {}
 
 function EnemySkeleton.removeAll()
-   for i,v in ipairs(ActiveEnemies) do
+   for i, v in ipairs(ActiveSkeletonEnemies) do
       v.physics.body:destroy()
    end
 
-   ActiveEnemies = {}
+   ActiveSkeletonEnemies = {}
 end
 
-function EnemySkeleton:new(x,y)
+function EnemySkeleton:new(x, y)
    local instance = setmetatable({}, EnemySkeleton)
    instance.x = x
    instance.y = y
@@ -22,53 +22,116 @@ function EnemySkeleton:new(x,y)
    instance.speed = 0
    instance.xVel = instance.speed
 
+   instance.health = { current = 1, max = 1}
    instance.damage = 1
 
    instance.state = "idle"
 
-   instance.animation = {timer = 0, rate = 0.1}
-   instance.animation.run = {total = 8, current = 1, img = EnemySkeleton.runAnim}
-   instance.animation.idle = {total = 4, current = 1, img = EnemySkeleton.walkAnim}
+   instance.isHurt = false
+   instance.isDying = false
+
+   instance.animation = { timer = 0, rate = 0.1 }
+   instance.animation.run = { total = 4, current = 1, img = EnemySkeleton.runAnim }
+   instance.animation.idle = { total = 4, current = 1, img = EnemySkeleton.walkAnim }
+   instance.animation.hit = { total = 4, current = 1, img = EnemySkeleton.hitAnim }
+   instance.animation.death = { total = 4, current = 1, img = EnemySkeleton.deathAnim }
    instance.animation.draw = instance.animation.run.img[1]
 
    instance.physics = {}
    instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
-   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.1, instance.height * 0.2)
+   instance.physics.shape = love.physics.newRectangleShape(instance.width * 0.07, instance.height * 0.2)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(25)
-   table.insert(ActiveEnemies, instance)
+   table.insert(ActiveSkeletonEnemies, instance)
+   table.insert(actorList, instance)
 end
 
 function EnemySkeleton.loadAssets()
    EnemySkeleton.runAnim = {}
-   for i=1,8 do
-      EnemySkeleton.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinRun/tile00"..i..".png")
+   for i = 1, 4 do
+      EnemySkeleton.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Skeleton/skeletonWalk/tile00".. i .. ".png")
    end
 
    EnemySkeleton.walkAnim = {}
-   for i=1,4 do
-      EnemySkeleton.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinIdle/tile00"..i..".png")
+   for i = 1, 4 do
+      EnemySkeleton.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Skeleton/skeletonIdle/tile00".. i .. ".png")
+   end
+
+   EnemySkeleton.hitAnim = {}
+   for i = 1, 4 do
+      EnemySkeleton.hitAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Skeleton/skeletonHit/tile00".. i .. ".png")
+   end
+
+   EnemySkeleton.deathAnim = {}
+   for i = 1, 4 do
+      EnemySkeleton.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Skeleton/skeletonDeath/tile00".. i .. ".png")
    end
 
    EnemySkeleton.width = EnemySkeleton.runAnim[1]:getWidth()
    EnemySkeleton.height = EnemySkeleton.runAnim[1]:getHeight()
 end
 
-function EnemySkeleton:update(dt)
-   self:syncPhysics()
-   self:animate(dt)
-   self:playerDetected()
+function EnemySkeleton:takeDamage(amount, skeletonActor)
+   if skeletonActor.health.current - amount > 0 then
+      skeletonActor.health.current = skeletonActor.health.current - amount
+      if skeletonActor.xVel < 0 then
+         skeletonActor.xVel = skeletonActor.xVel + 150
+      else
+         skeletonActor.xVel = skeletonActor.xVel - 150
+      end
+      skeletonActor.isHurt = true
+   else
+      skeletonActor.health.current = 0
+      skeletonActor:die(skeletonActor)
+      
+   end
+
+   print(skeletonActor.health.current)
+end
+
+function EnemySkeleton:die(skeletonActor)
+
+   if not skeletonActor.isDying then
+      skeletonActor.physics.body:destroy()
+   end
+   skeletonActor.isDying = true
+   print("goblin died")
+end
+
+function EnemySkeleton:dying(instance)
+   self.state = "death"
+   if self.animation.draw == self.animation.death.img[4] then
+      for i, v in ipairs(ActiveSkeletonEnemies) do
+         if (v == instance) then
+            table.remove(ActiveSkeletonEnemies, i)
+         end
+      end
+   end
+end
+
+function EnemySkeleton:update(dt, instance)
+      self:animate(dt)
+   if not self.isDying then
+      self:syncPhysics()
+      self:playerDetected()
+   else
+      self:dying(instance)
+   end
 end
 
 function EnemySkeleton:playerDetected()
-   
-   if math.max(self.x - Player.x, - (self.x - Player.x)) < 100 then
+   if self.isHurt then
+      self.state = "hit"
+      if self.animation.draw == self.animation.hit.img[4] then
+         self.isHurt = false
+      end
+   elseif math.max(self.x - Player.x, -(self.x - Player.x)) < 100 then
       self.state = "run"
       if self.x - Player.x > 0 then
-        self.xVel = - 65
+         self.xVel = -95
       elseif self.x - Player.x < 0 then
-        self.xVel = 65
+         self.xVel = 95
       end
    else
       self.state = "idle"
@@ -112,19 +175,19 @@ function EnemySkeleton:draw()
 end
 
 function EnemySkeleton.updateAll(dt)
-   for i,instance in ipairs(ActiveEnemies) do
-      instance:update(dt)
+   for i, instance in ipairs(ActiveSkeletonEnemies) do
+      instance:update(dt, instance)
    end
 end
 
 function EnemySkeleton.drawAll()
-   for i,instance in ipairs(ActiveEnemies) do
+   for i, instance in ipairs(ActiveSkeletonEnemies) do
       instance:draw()
    end
 end
 
 function EnemySkeleton.beginContact(a, b, collision)
-   for i,instance in ipairs(ActiveEnemies) do
+   for i, instance in ipairs(ActiveSkeletonEnemies) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
