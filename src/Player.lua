@@ -9,7 +9,7 @@ function Player:new()
    --Player.super.new(self,"src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png",400,500,20,1,0)
    self.image = "src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png"
    self.x = 50
-   self.y = 0
+   self.y = 100
    self.startX = self.x
    self.startY = self.y
    self.width = 50
@@ -27,6 +27,7 @@ function Player:new()
    self.graceDuration = 0.1
 
    self.alive = true
+   self.attacking = false
    self.grappleactive = false
    self.grabbed = false
    self.direction = "right"
@@ -69,6 +70,8 @@ function Player:setState()
       self.state = "idle"
    elseif self.grabbed then
       self.state = "grapple"
+   elseif self.attacking then
+      self.state = "attack"
    else
       self.state = "run"
    end
@@ -125,12 +128,12 @@ function Player:loadAssets()
 
    
    self.animation.grapple = { total = 2, current = 1, img = {} }
-   for i = 1, self.animation.air.total do
+   for i = 1, self.animation.grapple.total do
       self.animation.grapple.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Grapple/" .. i ..".png")
    end
 
    self.animation.attack = { total = 4, current = 1, img = {} }
-   for i = 1, self.animation.air.total do
+   for i = 1, self.animation.attack.total do
       self.animation.attack.img[i] = love.graphics.newImage("src/textures/PackNinja/IndividualSprites/Attack/" .. i ..".png")
    end
 
@@ -255,11 +258,11 @@ function Player:grapplinghookkey(key)
    -- si le vuelvo a dar se cancela CHECK
 end
 
-function Player:attack(dt)
+function Player:attack(key)
 -- ANIMACION
---if then
-
---end
+   if key == "k" then
+      self.attacking = true
+   end
 end
 
 function Player:grapplinghook(dt)

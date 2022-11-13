@@ -126,10 +126,8 @@ end
 function EnemyGoblin.beginContact(a, b, collision)
    for i,instance in ipairs(ActiveEnemies) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
-         print("damaged")
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
-            return true
          end
       end
    end

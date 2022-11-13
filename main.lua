@@ -2,6 +2,7 @@ Player = Player or require "src/Player"
 GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 Camera = Camera or require"src/Camera"
 EnemyGoblin = EnemyGoblin or require"src/EnemyGoblin"
+HUD = HUD or require"src/HUD"
 
 actorList = {} --Lista de elementos de juego
 
@@ -24,6 +25,8 @@ function love.load()
   EnemyGoblin.loadAssets()
 
   Player:new()
+  HUD:load()
+
   spawnEntities()
   --local p = Player()
   --table.insert(actorList,p)
@@ -37,6 +40,7 @@ function love.update(dt)
   Player:update(dt)
   EnemyGoblin.updateAll(dt)
   Camera:setPosition(Player.x, 0)
+  HUD:update(dt)
 end
 
 function love.draw()
@@ -57,19 +61,20 @@ function love.draw()
   EnemyGoblin.drawAll()
 
   Camera:clear()
+  HUD:draw()
 end
 
 function love.keypressed(key)
   --for _,v in ipairs(actorList) do
 
   --end
-  --Player:attack(key)
+  Player:attack(key)
   Player:jump(key)
   Player:grapplinghookkey(key)
 end
 
 function beginContact(a, b, collision)
-  EnemyGoblin:beginContact(a, b, collision)
+  EnemyGoblin.beginContact(a, b, collision)
   if a == Player.physics.fixture or b == Player.physics.fixture then
     Player:beginContact(a, b, collision)
   elseif Player.grappleactive then

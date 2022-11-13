@@ -47,7 +47,7 @@ end
 function Enemy.loadAssets()
    Enemy.runAnim = {}
    for i=1,8 do
-      Enemy.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/Run"..i..".png")
+      Enemy.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinRun/tile00"..i..".png")
    end
 
    --Enemy.walkAnim = {}
