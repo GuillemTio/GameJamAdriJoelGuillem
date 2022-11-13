@@ -19,8 +19,12 @@ function BossMushroom:new(x, y)
    instance.offsetY = -8
    instance.r = 0
 
-   instance.speed = 0
+   instance.speed = 100
+   instance.speedMod = 1
    instance.xVel = instance.speed
+
+   instance.rageCounter = 0
+   instance.rageTrigger = 3
 
    instance.health = { current = 2, max = 2 }
    instance.damage = 1
@@ -50,25 +54,25 @@ end
 function BossMushroom.loadAssets()
    BossMushroom.runAnim = {}
    for i = 1, 8 do
-      BossMushroom.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinRun/tile00"
+      BossMushroom.runAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/mushroomRun/tile00"
          .. i .. ".png")
    end
 
    BossMushroom.walkAnim = {}
    for i = 1, 4 do
-      BossMushroom.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinIdle/tile00"
+      BossMushroom.walkAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/mushroomIdle/tile00"
          .. i .. ".png")
    end
 
    BossMushroom.hitAnim = {}
    for i = 1, 4 do
-      BossMushroom.hitAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinHit/tile00"
+      BossMushroom.hitAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/mushroomHit/tile00"
          .. i .. ".png")
    end
 
    BossMushroom.deathAnim = {}
    for i = 1, 4 do
-      BossMushroom.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Goblin/goblinDeath/tile00"
+      BossMushroom.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Mushroom/mushroomDeath/tile00"
          .. i .. ".png")
    end
 
@@ -76,27 +80,27 @@ function BossMushroom.loadAssets()
    BossMushroom.height = BossMushroom.runAnim[1]:getHeight()
 end
 
-function BossMushroom:takeDamage(amount, goblinActor)
-   if goblinActor.health.current - amount > 0 then
-      goblinActor.health.current = goblinActor.health.current - amount
-      if goblinActor.xVel < 0 then
-         goblinActor.xVel = goblinActor.xVel + 150
+function BossMushroom:takeDamage(amount, mushroomActor)
+   if mushroomActor.health.current - amount > 0 then
+      mushroomActor.health.current = mushroomActor.health.current - amount
+      if mushroomActor.xVel < 0 then
+         mushroomActor.xVel = mushroomActor.xVel + 150
       else
-         goblinActor.xVel = goblinActor.xVel - 150
+         mushroomActor.xVel = mushroomActor.xVel - 150
       end
-      goblinActor.isHurt = true
+      mushroomActor.isHurt = true
    else
-      goblinActor.health.current = 0
-      goblinActor:die(goblinActor)
+      mushroomActor.health.current = 0
+      mushroomActor:die(mushroomActor)
    end
 
-   print(goblinActor.health.current)
+   print(mushroomActor.health.current)
 end
 
-function BossMushroom:die(goblinActor)
-   goblinActor.isDying = true
-   if not goblinActor.physics.body == nil then
-      goblinActor.physics.body:destroy()
+function BossMushroom:die(mushroomActor)
+   mushroomActor.isDying = true
+   if not mushroomActor.physics.body == nil then
+      mushroomActor.physics.body:destroy()
    end
    print("goblin died")
 end
@@ -121,6 +125,19 @@ function BossMushroom:update(dt, instance)
       self:dying(instance)
    end
 end
+
+function BossMushroom:incrementRage()
+   self.rageCounter = self.rageCounter + 1
+   if self.rageCounter > self.rageTrigger then
+      self.state = "run"
+      self.speedMod = 3
+      self.rageCounter = 0
+   else
+      self.state = "walk"
+      self.speedMod = 1
+   end
+end
+
 
 function BossMushroom:playerDetected()
    if self.isHurt then
@@ -165,7 +182,7 @@ end
 
 function BossMushroom:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
-   self.physics.body:setLinearVelocity(self.xVel, 100)
+   self.physics.body:setLinearVelocity(self.xVel * self.speedMod , 100)
 end
 
 function BossMushroom:draw()
@@ -195,6 +212,7 @@ function BossMushroom.beginContact(a, b, collision)
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
          end
+         instance:incrementRage()
       end
    end
 end
