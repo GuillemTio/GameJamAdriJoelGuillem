@@ -111,6 +111,7 @@ function EnemyGoblin:dying(instance)
 end
 
 function EnemyGoblin:update(dt, instance)
+      self:animate(dt)
    if not self.isDying then
       self:syncPhysics()
       self:animate(dt)
