@@ -9,7 +9,7 @@ return {
   tilewidth = 24,
   tileheight = 24,
   nextlayerid = 4,
-  nextobjectid = 150,
+  nextobjectid = 151,
   properties = {},
   tilesets = {
     {
@@ -458,6 +458,19 @@ return {
           shape = "point",
           x = 3434,
           y = 233,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 150,
+          name = "BossMushroom",
+          type = "bossMushroom",
+          shape = "point",
+          x = 6414,
+          y = 282,
           width = 0,
           height = 0,
           rotation = 0,
