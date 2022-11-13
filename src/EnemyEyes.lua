@@ -23,6 +23,7 @@ function EnemyEyes:new(x,y)
    instance.xVel = instance.speed
    instance.yVel = instance.speed
 
+   instance.health = { current = 2, max = 2 }
    instance.damage = 1
 
    instance.state = "fly"
@@ -43,6 +44,7 @@ function EnemyEyes:new(x,y)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
 
    table.insert(ActiveFlyingEnemies, instance)
+   table.insert(actorList, instance)
 end
 
 function EnemyEyes.loadAssets()
@@ -58,7 +60,7 @@ function EnemyEyes.loadAssets()
 
    EnemyEyes.deathAnim = {}
    for i = 1, 4 do
-      EnemyEyes.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Flying_eye/eyeDeath/tile00".. i .. ".png")
+      EnemyEyes.deathAnim[i] = love.graphics.newImage("src/textures/Monsters_Creatures_Fantasy/Flying_eye/eyeDie/tile00".. i .. ".png")
    end
 
    EnemyEyes.width = EnemyEyes.flyAnim[1]:getWidth()
@@ -69,9 +71,9 @@ function EnemyEyes:takeDamage(amount, eyeActor)
    if eyeActor.health.current - amount > 0 then
       eyeActor.health.current = eyeActor.health.current - amount
       if eyeActor.xVel < 0 then
-         eyeActor.xVel = eyeActor.xVel + 150
+         eyeActor.xVel = eyeActor.xVel + 250
       else
-         eyeActor.xVel = eyeActor.xVel - 150
+         eyeActor.xVel = eyeActor.xVel - 250
       end
       eyeActor.isHurt = true
    else
