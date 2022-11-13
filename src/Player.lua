@@ -22,12 +22,15 @@ function Player:new()
    self.gravity = 1500
    self.jumpAmount = -500
    self.health = {current = 3, max = 3}
+   self.attackRangeX = 40
+   self.attackRangeY = 30
 
    self.graceTime = 0 
    self.graceDuration = 0.1
 
    self.alive = true
    self.attacking = false
+   self.damageDone = false
    self.grappleactive = false
    self.grabbed = false
    self.direction = "right"
@@ -55,6 +58,7 @@ function Player:update(dt)
 
    if not self.grabbed then
       self:move(dt)
+      self:attack()
       --self:applyGravity(dt)
    else
       self:movetograpple()
@@ -64,14 +68,14 @@ function Player:update(dt)
 end
 
 function Player:setState()
-   if not self.grounded and not self.grabbed then
+   if self.attacking then
+   self.state = "attack"
+   elseif not self.grounded and not self.grabbed then
       self.state = "air"
    elseif self.xVel == 0 then
       self.state = "idle"
    elseif self.grabbed then
       self.state = "grapple"
-   elseif self.attacking then
-      self.state = "attack"
    else
       self.state = "run"
    end
@@ -258,10 +262,35 @@ function Player:grapplinghookkey(key)
    -- si le vuelvo a dar se cancela CHECK
 end
 
-function Player:attack(key)
--- ANIMACION
-   if key == "k" then
+function Player:attackkey(key)
+   if key == "k" and not self.grabbed and not self.attacking then
       self.attacking = true
+   end
+end
+
+function Player:attack()
+   if self.attacking then
+      if self.animation.draw == self.animation.attack.img[3] and not self.damageDone then
+         for _,v in ipairs(actorList) do 
+            if self.direction == "right" then
+               if v.x > self.x and v.x < self.x+self.attackRangeX and v.y > self.y-self.attackRangeY and v.y < self.y+self.attackRangeY then
+                  print(v)
+                  v:takeDamage(1,v)
+                  self.damageDone = true
+               end
+            else
+               if v.x < self.x and v.x > self.x-self.attackRangeX and v.y > self.y-self.attackRangeY and v.y < self.y+self.attackRangeY then
+                  print(v)
+                  v:takeDamage(1,v)
+                  self.damageDone = true
+               end
+            end
+         end
+      end
+   end
+   if self.animation.draw == self.animation.attack.img[4] then
+      self.attacking = false
+      self.damageDone = false
    end
 end
 

@@ -72,7 +72,7 @@ function love.keypressed(key)
   --for _,v in ipairs(actorList) do
 
   --end
-  Player:attack(key)
+  Player:attackkey(key)
   Player:jump(key)
   Player:grapplinghookkey(key)
 end
