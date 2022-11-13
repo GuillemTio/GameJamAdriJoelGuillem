@@ -133,9 +133,9 @@ function EnemyGoblin:playerDetected()
       end
    elseif math.max(self.x - Player.x, -(self.x - Player.x)) < 100 then
       self.state = "run"
-      if self.x - Player.x > 0 then
+      if self.x - Player.x > 5 then
          self.xVel = -65
-      elseif self.x - Player.x < 0 then
+      elseif self.x - Player.x < -5 then
          self.xVel = 65
       end
    else

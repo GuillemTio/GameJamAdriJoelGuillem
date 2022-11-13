@@ -7,6 +7,7 @@ local ActiveBoss = {}
 function BossMushroom.removeAll()
    for i, v in ipairs(ActiveBoss) do
       v.physics.body:destroy()
+      v.isDying = true
    end
 
    ActiveBoss = {}
@@ -26,7 +27,7 @@ function BossMushroom:new(x, y)
    instance.rageCounter = 0
    instance.rageTrigger = 3
 
-   instance.health = { current = 10, max = 10 }
+   instance.health = { current = 5, max = 5 }
    instance.damage = 1
 
    instance.state = "run"
@@ -84,11 +85,6 @@ end
 function BossMushroom:takeDamage(amount, mushroomActor)
    if mushroomActor.health.current - amount > 0 then
       mushroomActor.health.current = mushroomActor.health.current - amount
-      if mushroomActor.xVel < 0 then
-         mushroomActor.xVel = mushroomActor.xVel + 150
-      else
-         mushroomActor.xVel = mushroomActor.xVel - 150
-      end
       mushroomActor.isHurt = true
    else
       mushroomActor.health.current = 0
@@ -112,6 +108,10 @@ function BossMushroom:dying(instance)
       for i, v in ipairs(ActiveBoss) do
          if (v == instance) then
             table.remove(ActiveBoss, i)
+            gameWon = true
+            gameStarted = false
+            backgroundMusic:stop()
+            love.load()
          end
       end
    end
@@ -121,6 +121,13 @@ function BossMushroom:update(dt, instance)
       self:animate(dt)
    if not self.isDying then
       self:syncPhysics()
+      if self.isHurt then
+         self.state = "hit"
+         if self.animation.draw == self.animation.hit.img[4] then
+            self.isHurt = false
+            self.state = "run"
+         end
+      end
    else
       self:dying(instance)
    end

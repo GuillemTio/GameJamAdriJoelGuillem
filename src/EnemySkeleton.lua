@@ -116,12 +116,12 @@ function EnemySkeleton:playerDetected()
       if self.animation.draw == self.animation.hit.img[4] then
          self.isHurt = false
       end
-   elseif math.max(self.x - Player.x, -(self.x - Player.x)) < 100 then
+   elseif math.max(self.x - Player.x, -(self.x - Player.x)) < 160 then
       self.state = "run"
       if self.x - Player.x > 0 then
-         self.xVel = -95
+         self.xVel = -120
       elseif self.x - Player.x < 0 then
-         self.xVel = 95
+         self.xVel = 120
       end
    else
       self.state = "idle"

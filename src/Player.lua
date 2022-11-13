@@ -3,12 +3,12 @@ local Player = Actor:extend()
 local Vector = Vector or require "src/vector"
 --local GrapplingHook = GrapplingHook or require "src/GrapplingHook"
 
-Player = {} -- Joel(07/11): no se si esto serà lo que da el problema / Joel(07/11): esta solucionado pero el tio lo tiene puesto
+Player = {} 
 
 function Player:new()
    --Player.super.new(self,"src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png",400,500,20,1,0)
    self.image = "src/textures/PackNinja/IndividualSprites/adventurer-idle-00.png"
-   self.x = 280 * 22 --50
+   self.x = 50
    self.y = 100
    self.startX = self.x
    self.startY = self.y
@@ -21,7 +21,7 @@ function Player:new()
    self.friction = 3000
    self.gravity = 1500
    self.jumpAmount = -500
-   self.health = {current = 3, max = 3}
+   self.health = {current = 5, max = 5}
    self.attackRangeX = 40
    self.attackRangeY = 30
 
@@ -43,6 +43,8 @@ function Player:new()
    self.direction = "right"
    self.state = "idle"
    self.grounded = false
+
+   self.godModeActive = false
 
    self:loadAssets {}
 
@@ -158,6 +160,7 @@ end
 
 function Player:takeDamage(amount)
    self:tintRed()
+   if not self.godModeActive then
    if self.health.current - amount > 0 then
       self.health.current = self.health.current - amount
       if self.direction == "right" then
@@ -171,6 +174,7 @@ function Player:takeDamage(amount)
       self.health.current = 0
       self:die()
    end
+end
 
    print(self.health.current)
 end
@@ -191,6 +195,7 @@ function Player:respawn()
       EnemyEyes.removeAll()
       EnemySkeleton.removeAll()
       BossMushroom.removeAll()
+      backgroundMusic:stop()
       love.load()
       --self.physics.body:setPosition(self.startX, self.startY)
       --self.health.current = self.health.max
@@ -304,6 +309,16 @@ function Player:attackkey(key)
    end
 end
 
+function Player:godMode(key)
+   if key == "g"then
+      if not self.godModeActive then
+         self.godModeActive = true
+      else
+         self.godModeActive = false
+      end
+   end
+end
+
 function Player:attack()
    if self.attacking then
       if self.animation.draw == self.animation.attack.img[3] and not self.damageDone then
@@ -329,6 +344,7 @@ function Player:attack()
       self.damageDone = false
    end
 end
+
 
 function Player:grapplinghook(dt)
    if self.grappleactive then
