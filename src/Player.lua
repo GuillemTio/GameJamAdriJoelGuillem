@@ -279,14 +279,12 @@ function Player:attack()
                   print(v)
                   v:takeDamage(1,v)
                   self.damageDone = true
-                  --v.xVel = v.xVel+100
                end
             else
                if v.x < self.x and v.x > self.x-self.attackRangeX and v.y > self.y-self.attackRangeY and v.y < self.y+self.attackRangeY then
                   print(v)
                   v:takeDamage(1,v)
                   self.damageDone = true
-                  --v.xVel = v.xVel-100
                end
             end
          end
